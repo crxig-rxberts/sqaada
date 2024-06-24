@@ -13,13 +13,13 @@ export default function Navbar() {
 							<div className="collapse navbar-collapse" id="navbarNav">
 								<ul className="ml-auto navbar-nav">
 									<li className="nav-item active">
-										<Link to="/home" className="nav-link">safafasfas</Link>
+										<Link to="/home" className="nav-link">Home</Link>
 									</li>
 									<li className="nav-item">
-										<Link to="/" className="nav-link" >Features</Link>
+										<Link to="/newTODO" className="nav-link" >New TODO</Link>
 									</li>
 									<li className="nav-item">
-										<Link to="/" className="nav-link" >Pricing</Link>
+										<Link to="/existingTODOList" className="nav-link" >Existing TODO List</Link>
 									</li>
 								</ul>
 							</div>
