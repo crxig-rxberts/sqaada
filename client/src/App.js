@@ -13,7 +13,10 @@ export class App extends Component {
             <Route
               key={route.path}
               path={route.path}
-              component={route.component}
+              exact={route.exact}
+              render={(props) => (
+                <route.component {...props} userName={route.userName} />
+              )}
             />
           ))}
         </div>
