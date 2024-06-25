@@ -4,4 +4,3 @@ config
 .data/db/*
 
 package-lock.json
-
