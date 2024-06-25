@@ -6,10 +6,10 @@ export default function Home({ userName }) {
         <div className="home-page-container">
         <h1 className="welcome-message">Hello, {userName}!</h1>
         <div className="button-container">
-        <Link to="/newTODO" className="button">
+        <Link to="/NewTODO" className="button">
           Create A New TODO List
         </Link>
-        <Link to="/openExistingTODO" className="button">
+        <Link to="/OpenExistingTODO" className="button">
           Open An Existing TODO List
         </Link>
       </div>

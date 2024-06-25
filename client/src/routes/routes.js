@@ -7,7 +7,7 @@ const routes = [
     {
       path: '/home',
       component: Home,
-      userName: "John Doe"
+      userName: userName
     },
  
   ]
