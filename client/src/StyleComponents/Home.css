@@ -1,9 +1,9 @@
-body, html {
+body{
   margin: 0;
   padding: 0;
   height: 100%;
   font-family: Arial, sans-serif;
-  background: linear-gradient(to bottom, lightblue, white);
+  background: linear-gradient(to bottom, #87CEEB, #FFFFFF);
 }
 
 #root {

@@ -1,0 +1,122 @@
+ 
+  .existing-todo-page-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(to bottom, #87CEEB, #FFFFFF);
+    font-family: Arial, sans-serif;
+  }
+  
+  .content {
+    max-width: 800px;
+    width: 100%;
+    padding: 20px;
+    background-color: transparent; /* Remove background color */
+  }
+  
+  .title-input {
+    width: calc(100% - 100px);
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+  
+  .button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .button {
+    background-color: linear-gradient(to bottom, lightblue, white);
+    border: 2px solid #dcdcdc;
+    border-radius: 10px;
+    width: 30vw;
+    height: 30vh;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    text-decoration: none;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    position: relative;
+  }
+  
+  .button:hover {
+    border-color: linear-gradient(to bottom, lightblue, white);
+    color: #333;
+    transform: translateY(-3px);
+    box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  .list-container {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .list-item {
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #f2f2f2;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .list-item:hover {
+    background-color: #e0e0e0;
+  }
+  
+  .todo-list {
+    margin-top: 20px;
+  }
+  
+  .todo-item {
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    position: relative;
+  }
+  
+  .todo-item:hover {
+    background-color: #f2f2f2;
+  }
+  
+  .flagged {
+    border-left: 5px solid red;
+  }
+  
+  .red-dot {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    width: 10px;
+    height: 10px;
+    background-color: red;
+    border-radius: 50%;
+  }
+  
+  .back-button {
+    margin-top: 10px;
+    padding: 8px 16px;
+    background-color: #ccc;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
