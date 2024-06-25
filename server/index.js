@@ -2,15 +2,19 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
+const toDoRoutes = require('./routes/toDoRouter');
 const path = require('path'); // Node.js path module
 
 const app = express();
 const port = process.env.PORT || 8000;
 
 // Middleware
-app.use(morgan('tiny'));
+app.use(morgan('combined'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+// Apply Routers
+app.use('/api', toDoRoutes);
 
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, 'client/build')));
