@@ -5,7 +5,7 @@ import Home from '../Components/Home'
 const userName = "Craig";
 const routes = [
     {
-      path: '/home',
+      path: '/',
       component: Home,
       userName: userName
     },
