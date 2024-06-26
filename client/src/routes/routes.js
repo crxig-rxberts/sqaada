@@ -5,15 +5,14 @@ import OpenExistingTODO from '../Components/OpenExistingTODO';
 
 const userName = "Craig";
 const routes = [
-    {
-      path: '/home',
-      component: Home
-    },
-    {
-      path: '/existingTODOList',
-      component: OpenExistingTODO
-    },
- 
+  {
+    path: '/existingTODOList',
+    component: OpenExistingTODO
+  }, 
+  {
+    path: '/',
+    component: Home
+  },
   ]
 
 
