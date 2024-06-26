@@ -18,10 +18,22 @@ describe('toDoRouter', () => {
 
         // Reset mocks and mock implementations for controller methods
         jest.resetAllMocks();
+        toDoController.createNewList.mockImplementation((req, res) => res.json({ status: 'SUCCESS' }));
+        toDoController.getAllLists.mockImplementation((req, res) => res.json({ status: 'SUCCESS' }));
         toDoController.getListById.mockImplementation((req, res) => res.json({ status: 'SUCCESS' }));
-        toDoController.addItemInList.mockImplementation((req, res) => res.json({ status: 'SUCCESS' }));
-        toDoController.updateItemInList.mockImplementation((req, res) => res.json({ status: 'SUCCESS' }));
-        toDoController.deleteItemFromList.mockImplementation((req, res) => res.json({ status: 'SUCCESS' }));
+        toDoController.deleteList.mockImplementation((req, res) => res.json({ status: 'SUCCESS' }));
+    });
+
+    test('POST /api/to-do-list/ calls createNewList controller', async () => {
+        await request(app)
+            .post('/api/to-do-list/')
+            .send({'name': 'To Do List'});
+        expect(toDoController.createNewList).toHaveBeenCalled();
+    });
+
+    test('GET /api/to-do-list/ calls getAllLists controller', async () => {
+        await request(app).get('/api/to-do-list/');
+        expect(toDoController.getAllLists).toHaveBeenCalled();
     });
 
     test('GET /api/to-do-list/:listId calls getListById controller', async () => {
@@ -29,18 +41,8 @@ describe('toDoRouter', () => {
         expect(toDoController.getListById).toHaveBeenCalled();
     });
 
-    test('POST /api/to-do-list/:listId calls addItemInList controller', async () => {
-        await request(app).post('/api/to-do-list/123').send({});
-        expect(toDoController.addItemInList).toHaveBeenCalled();
-    });
-
-    test('PUT /api/to-do-list/:listId/:itemId calls updateItemInList controller', async () => {
-        await request(app).put('/api/to-do-list/123/456').send({});
-        expect(toDoController.updateItemInList).toHaveBeenCalled();
-    });
-
-    test('DELETE /api/to-do-list/:listId/:itemId calls deleteItemFromList controller', async () => {
-        await request(app).delete('/api/to-do-list/123/456');
-        expect(toDoController.deleteItemFromList).toHaveBeenCalled();
+    test('DELETE /api/to-do-list/:listId calls deleteList controller', async () => {
+        await request(app).delete('/api/to-do-list/123');
+        expect(toDoController.deleteList).toHaveBeenCalled();
     });
 });

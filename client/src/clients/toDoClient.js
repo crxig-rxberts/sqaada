@@ -1,7 +1,18 @@
-const API_BASE_URL = 'http://localhost:8000/api/to-do-list';
+const API_BASE_URL = 'http://localhost:8000/api';
+
+async function createNewList(listName) {
+    const response = await fetch(`${API_BASE_URL}/to-do-list/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name: listName })
+    });
+    return response.json();
+}
 
 async function getAllLists() {
-    const response = await fetch(`${API_BASE_URL}/`, {
+    const response = await fetch(`${API_BASE_URL}/to-do-list/`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -11,7 +22,7 @@ async function getAllLists() {
 }
 
 async function getListById(listId) {
-    const response = await fetch(`${API_BASE_URL}/${listId}`, {
+    const response = await fetch(`${API_BASE_URL}/to-do-list/${listId}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -20,8 +31,18 @@ async function getListById(listId) {
     return response.json();
 }
 
+async function deleteList(listId) {
+    const response = await fetch(`${API_BASE_URL}/to-do-list/${listId}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    return response.json();
+}
+
 async function addItemInList(listId, item) {
-    const response = await fetch(`${API_BASE_URL}/${listId}`, {
+    const response = await fetch(`${API_BASE_URL}/to-do-list/${listId}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -31,8 +52,18 @@ async function addItemInList(listId, item) {
     return response.json();
 }
 
+async function getItemFromList(listId, itemId) {
+    const response = await fetch(`${API_BASE_URL}/to-do-list/${listId}/${itemId}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    return response.json();
+}
+
 async function updateItemInList(listId, itemId, item) {
-    const response = await fetch(`${API_BASE_URL}/${listId}/${itemId}`, {
+    const response = await fetch(`${API_BASE_URL}/to-do-list/${listId}/${itemId}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
@@ -43,7 +74,7 @@ async function updateItemInList(listId, itemId, item) {
 }
 
 async function deleteItemFromList(listId, itemId) {
-    const response = await fetch(`${API_BASE_URL}/${listId}/${itemId}`, {
+    const response = await fetch(`${API_BASE_URL}/to-do-list/${listId}/${itemId}`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json'
@@ -52,20 +83,13 @@ async function deleteItemFromList(listId, itemId) {
     return response.json();
 }
 
-/*
-This needs updating dont refer to the below yet, will create postman to demonstrate example usage
-
-getAllLists().then(data => console.log(data));
-getListById('123').then(data => console.log(data));
-addItemInList('123', { name: 'New Item', description: 'Description of the new item' }).then(data => console.log(data));
-updateItemInList('123', '456', { name: 'Updated Item', status: 'COMPLETED' }).then(data => console.log(data));
-deleteItemFromList('123', '456').then(data => console.log(data));
-*/
-
 export {
+    createNewList,
     getAllLists,
     getListById,
+    deleteList,
     addItemInList,
+    getItemFromList,
     updateItemInList,
     deleteItemFromList
 };
