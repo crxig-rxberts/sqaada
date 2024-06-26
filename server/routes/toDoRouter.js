@@ -2,11 +2,16 @@ const express = require('express');
 const router = express.Router();
 const toDoController = require('../controllers/toDoController');
 
-// This file defines the backend endpoint routes and associates them with controllers methods
+// POST - Create New List
+router.post('/to-do-list/', toDoController.createNewList);
+
+// GET - Get All Lists
 router.get('/to-do-list/', toDoController.getAllLists);
+
+// GET - Get List
 router.get('/to-do-list/:listId', toDoController.getListById);
-router.post('/to-do-list/:listId', toDoController.addItemInList);
-router.put('/to-do-list/:listId/:itemId', toDoController.updateItemInList);
-router.delete('/to-do-list/:listId/:itemId', toDoController.deleteItemFromList);
+
+// DELETE - Delete List
+router.delete('/to-do-list/:listId', toDoController.deleteList);
 
 module.exports = router;

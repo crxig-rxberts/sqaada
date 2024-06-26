@@ -18,89 +18,101 @@ describe('toDoController', () => {
         };
     });
 
-    test('getAllLists returns lists on success', async () => {
-        const mockItems = [{ listId: '1', name: 'Test Item' }];
-        toDoService.getAllLists.mockResolvedValue({ Items: mockItems });
-        await toDoController.getAllLists(mockReq, mockRes);
-        expect(mockRes.json).toHaveBeenCalledWith(mockItems);
+    describe('createNewList', () => {
+        test('returns success with listId on successful creation', async () => {
+            const mockListId = '123';
+            toDoService.createNewList.mockResolvedValue(mockListId);
+            mockReq.body = { name: 'New List' };
+
+            await toDoController.createNewList(mockReq, mockRes);
+
+            expect(toDoService.createNewList).toHaveBeenCalledWith(mockReq.body);
+            expect(mockRes.json).toHaveBeenCalledWith({ status: 'SUCCESS', listId: mockListId });
+        });
+
+        test('handles errors during list creation', async () => {
+            const mockError = new Error('Test error');
+            toDoService.createNewList.mockRejectedValue(mockError);
+            mockReq.body = { name: 'New List' };
+
+            await toDoController.createNewList(mockReq, mockRes);
+
+            expect(mockRes.status).toHaveBeenCalledWith(500);
+            expect(mockRes.send).toHaveBeenCalledWith({ status: 'FAIL', errorMessage: mockError.message });
+        });
     });
 
-    test('getAllLists handles errors', async () => {
-        const mockError = new Error('Test error');
-        toDoService.getAllLists.mockRejectedValue(mockError);
-        mockReq.params = { listId: '1' }; // Set listId
-        await toDoController.getAllLists(mockReq, mockRes);
-        expect(mockRes.status).toHaveBeenCalledWith(500);
-        expect(mockRes.send).toHaveBeenCalledWith({ status: 'FAIL', errorMessage: mockError.message });
+    describe('getAllLists', () => {
+        test('returns all lists on success', async () => {
+            const mockItems = [{ listId: '1', name: 'Test List' }];
+            toDoService.getAllLists.mockResolvedValue({ Items: mockItems });
+
+            await toDoController.getAllLists(mockReq, mockRes);
+
+            expect(mockRes.json).toHaveBeenCalledWith({ status: 'SUCCESS', lists: mockItems });
+        });
+
+        test('handles errors when getting all lists', async () => {
+            const mockError = new Error('Test error');
+            toDoService.getAllLists.mockRejectedValue(mockError);
+
+            await toDoController.getAllLists(mockReq, mockRes);
+
+            expect(mockRes.status).toHaveBeenCalledWith(500);
+            expect(mockRes.send).toHaveBeenCalledWith({ status: 'FAIL', errorMessage: mockError.message });
+        });
     });
 
-    test('getListById returns items on success', async () => {
-        const mockItems = [{ itemId: '1', name: 'Test Item' }];
-        toDoService.getListById.mockResolvedValue({ Items: mockItems });
-        mockReq.params = { listId: '1' }; // Set listId
-        await toDoController.getListById(mockReq, mockRes);
-        expect(mockRes.json).toHaveBeenCalledWith(mockItems);
+    describe('getListById', () => {
+        test('returns a specific list on success', async () => {
+            const mockList = { listId: '1', name: 'Test List', items: [] };
+            toDoService.getListById.mockResolvedValue(mockList);
+            mockReq.params = { listId: '1' };
+
+            await toDoController.getListById(mockReq, mockRes);
+
+            expect(toDoService.getListById).toHaveBeenCalledWith('1');
+            expect(mockRes.json).toHaveBeenCalledWith({ status: 'SUCCESS', list: mockList });
+        });
+
+        test('handles errors when getting a specific list', async () => {
+            const mockError = new Error('Test error');
+            toDoService.getListById.mockRejectedValue(mockError);
+            mockReq.params = { listId: '1' };
+
+            await toDoController.getListById(mockReq, mockRes);
+
+            expect(mockRes.status).toHaveBeenCalledWith(500);
+            expect(mockRes.send).toHaveBeenCalledWith({ status: 'FAIL', errorMessage: mockError.message });
+        });
     });
 
-    test('getListById handles errors', async () => {
-        const mockError = new Error('Test error');
-        toDoService.getListById.mockRejectedValue(mockError);
-        mockReq.params = { listId: '1' }; // Set listId
-        await toDoController.getListById(mockReq, mockRes);
-        expect(mockRes.status).toHaveBeenCalledWith(500);
-        expect(mockRes.send).toHaveBeenCalledWith({ status: 'FAIL', errorMessage: mockError.message });
-    });
+    describe('deleteList', () => {
+        test('returns 200 and success message when list is deleted', async () => {
+            toDoService.deleteList.mockResolvedValue();
 
-    test('addItemInList returns success on successful addition', async () => {
-        const mockItem = { itemId: '123', name: 'New Item' };
-        toDoService.addItemToList.mockResolvedValue({ Item: mockItem });
-        mockReq.params = { listId: '1' }; // Set listId
-        mockReq.body = { itemId: '123', name: 'New Item' };
-        await toDoController.addItemInList(mockReq, mockRes);
-        expect(mockRes.json).toHaveBeenCalledWith({ status: 'SUCCESS', itemId: mockItem.itemId });
-    });
+            await toDoController.deleteList(mockReq, mockRes);
 
-    test('addItemInList handles errors', async () => {
-        const mockError = new Error('Test error');
-        toDoService.addItemToList.mockRejectedValue(mockError);
-        mockReq.params = { listId: '1' }; // Set listId
-        mockReq.body = { name: 'New Item' };
-        await toDoController.addItemInList(mockReq, mockRes);
-        expect(mockRes.status).toHaveBeenCalledWith(500);
-        expect(mockRes.send).toHaveBeenCalledWith({ status: 'FAIL', errorMessage: mockError.message });
-    });
+            expect(mockRes.status).toHaveBeenCalledWith(200);
+            expect(mockRes.json).toHaveBeenCalledWith({ status: 'SUCCESS', message: 'List deleted successfully' });
+        });
 
-    test('updateItemInList returns success on successful update', async () => {
-        toDoService.updateItemInList.mockResolvedValue({});
-        mockReq.params = { listId: '1', itemId: '123' }; // Set listId and itemId
-        mockReq.body = { name: 'Updated Item' };
-        await toDoController.updateItemInList(mockReq, mockRes);
-        expect(mockRes.json).toHaveBeenCalledWith({ status: 'SUCCESS' });
-    });
+        test('returns 404 when list is not found', async () => {
+            toDoService.deleteList.mockRejectedValue(new Error('List not found'));
 
-    test('updateItemInList handles errors', async () => {
-        const mockError = new Error('Test error');
-        toDoService.updateItemInList.mockRejectedValue(mockError);
-        mockReq.params = { listId: '1', itemId: '123' }; // Set listId and itemId
-        mockReq.body = { name: 'Updated Item' };
-        await toDoController.updateItemInList(mockReq, mockRes);
-        expect(mockRes.status).toHaveBeenCalledWith(500);
-        expect(mockRes.send).toHaveBeenCalledWith({ status: 'FAIL', errorMessage: mockError.message });
-    });
+            await toDoController.deleteList(mockReq, mockRes);
 
-    test('deleteItemFromList returns success on successful deletion', async () => {
-        toDoService.deleteItemFromList.mockResolvedValue({});
-        mockReq.params = { listId: '1', itemId: '123' }; // Set listId and itemId
-        await toDoController.deleteItemFromList(mockReq, mockRes);
-        expect(mockRes.json).toHaveBeenCalledWith({ status: 'SUCCESS' });
-    });
+            expect(mockRes.status).toHaveBeenCalledWith(404);
+            expect(mockRes.json).toHaveBeenCalledWith({ status: 'FAIL', message: 'List not found' });
+        });
 
-    test('deleteItemFromList handles errors', async () => {
-        const mockError = new Error('Test error');
-        toDoService.deleteItemFromList.mockRejectedValue(mockError);
-        mockReq.params = { listId: '1', itemId: '123' }; // Set listId and itemId
-        await toDoController.deleteItemFromList(mockReq, mockRes);
-        expect(mockRes.status).toHaveBeenCalledWith(500);
-        expect(mockRes.send).toHaveBeenCalledWith({ status: 'FAIL', errorMessage: mockError.message });
+        test('returns 500 on internal server error', async () => {
+            toDoService.deleteList.mockRejectedValue(new Error('Database error'));
+
+            await toDoController.deleteList(mockReq, mockRes);
+
+            expect(mockRes.status).toHaveBeenCalledWith(500);
+            expect(mockRes.json).toHaveBeenCalledWith({ status: 'FAIL', message: 'Internal server error' });
+        });
     });
 });

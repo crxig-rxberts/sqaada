@@ -1,70 +1,74 @@
-const { v4: uuidv4 } = require('uuid');
 const toDoRepositoryPath = '../../../server/repositories/toDoRepository';
 const toDoRepository = require(toDoRepositoryPath);
 const toDoService = require('../../../server/services/toDoService');
 
 jest.mock(toDoRepositoryPath);
-jest.mock('../../../server/repositories/toDoRepository');
-jest.mock('uuid');
 
 describe('toDoService', () => {
     beforeEach(() => {
-        jest.resetAllMocks()
-        uuidv4.mockReturnValue('mocked-uuid');
+        jest.clearAllMocks();
+        toDoRepository.createNewList = jest.fn();
+        toDoRepository.getAllLists = jest.fn();
+        toDoRepository.getListById = jest.fn();
+        toDoRepository.deleteList = jest.fn();
     });
 
-    test('getAllLists calls repository.getAllLists', async () => {
-        await toDoService.getAllLists();
-        expect(toDoRepository.getAllLists).toHaveBeenCalled();
+    describe('createNewList', () => {
+        test('calls repository.createNewList with correct name', async () => {
+            const mockName = 'New List';
+            await toDoService.createNewList({ name: mockName });
+            expect(toDoRepository.createNewList).toHaveBeenCalledWith(mockName);
+        });
+
+        test('returns the result from repository.createNewList', async () => {
+            const mockResult = { id: 'list-id', name: 'New List' };
+            toDoRepository.createNewList.mockResolvedValue(mockResult);
+            const result = await toDoService.createNewList({ name: 'New List' });
+            expect(result).toEqual(mockResult);
+        });
     });
 
-    test('getListById calls repository.getListById', async () => {
-        const listId = '123';
-        await toDoService.getListById(listId);
-        expect(toDoRepository.getListById).toHaveBeenCalledWith(listId);
+    describe('getAllLists', () => {
+        test('calls repository.getAllLists', async () => {
+            await toDoService.getAllLists();
+            expect(toDoRepository.getAllLists).toHaveBeenCalled();
+        });
+
+        test('returns the result from repository.getAllLists', async () => {
+            const mockLists = [{ id: 'list1' }, { id: 'list2' }];
+            toDoRepository.getAllLists.mockResolvedValue(mockLists);
+            const result = await toDoService.getAllLists();
+            expect(result).toEqual(mockLists);
+        });
     });
 
-    test('addItemToList calls repository.updateItemInList with correct data', async () => {
-        const mockItemData = { listId: '1', name: 'Test Item', description: 'Test Description' };
-        await toDoService.addItemToList(mockItemData.listId, { name: 'Test Item', description: 'Test Description' });
+    describe('getListById', () => {
+        test('calls repository.getListById with correct listId', async () => {
+            const listId = '123';
+            await toDoService.getListById(listId);
+            expect(toDoRepository.getListById).toHaveBeenCalledWith(listId);
+        });
 
-        expect(toDoRepository.updateItemInList).toHaveBeenCalledWith(
-            '1',
-            'mocked-uuid',
-            'SET #items = list_append(if_not_exists(#items, :empty_list), :item)',
-            {
-                ':item': [{
-                    itemId: 'mocked-uuid',
-                    name: 'Test Item',
-                    description: 'Test Description',
-                    createdDate: expect.any(String)
-                }],
-                ':empty_list': []
-            }
-        );
+        test('returns the result from repository.getListById', async () => {
+            const mockList = { id: 'list-id', name: 'Test List' };
+            toDoRepository.getListById.mockResolvedValue(mockList);
+            const result = await toDoService.getListById('list-id');
+            expect(result).toEqual(mockList);
+        });
     });
 
-    test('updateItemInList calls repository.updateItemInList with correct data', async () => {
-        const listId = '1';
-        const itemId = '123';
-        const mockUpdateData = { name: 'Updated Name', status: 'COMPLETED' };
-        await toDoService.updateItemInList(listId, itemId, mockUpdateData);
+    describe('deleteList', () => {
+        test('calls repository.deleteList with correct listId', async () => {
+            const listId = '123';
+            toDoRepository.getListById.mockResolvedValue({ id: listId, name: 'Test List' });
+            await toDoService.deleteList(listId);
+            expect(toDoRepository.deleteList).toHaveBeenCalledWith(listId);
+        });
 
-        expect(toDoRepository.updateItemInList).toHaveBeenCalledWith(
-            listId,
-            itemId,
-            'SET items[123].name = :name, items[123].status = :status',
-            {
-                ':name': 'Updated Name',
-                ':status': 'COMPLETED'
-            }
-        );
-    });
-
-    test('deleteItemFromList calls repository.deleteItemFromList', async () => {
-        const listId = '1';
-        const itemId = '123';
-        await toDoService.deleteItemFromList(listId, itemId);
-        expect(toDoRepository.deleteItemFromList).toHaveBeenCalledWith(listId, itemId);
+        test('throws error when list is not found', async () => {
+            const listId = '123';
+            toDoRepository.getListById.mockResolvedValue(null);
+            await expect(toDoService.deleteList(listId)).rejects.toThrow('List not found');
+        });
     });
 });
