@@ -17,9 +17,6 @@ export default function Navbar() {
 									<li className="nav-item">
 										<Link to="/newTODO" className="nav-link" >New TODO</Link>
 									</li>
-									<li className="nav-item">
-										<Link to="/existingTODOList" className="nav-link" >Existing TODO List</Link>
-									</li>
 								</ul>
 							</div>
 						</div>
