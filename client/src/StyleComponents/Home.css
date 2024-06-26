@@ -3,7 +3,7 @@ body, html {
   padding: 0;
   height: 100%;
   font-family: Arial, sans-serif;
-  background: linear-gradient(to bottom, #87CEEB, #FFFFFF);
+  background: linear-gradient(to bottom, lightblue, white);
 }
 
 #root {
@@ -15,7 +15,7 @@ body, html {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
+  height: 80%;
   color: #333;
   text-align: center;
 }

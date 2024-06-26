@@ -1,8 +1,9 @@
 import React from 'react';
 import '../StyleComponents/Home.css';
 import { Link } from 'react-router-dom';
+import '../App.css';
 
-export default function Home() {
+export default function Home({ userName }) {
     return (
         <div className="home-page-container">
         <div className="button-container">
