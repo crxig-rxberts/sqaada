@@ -38,7 +38,7 @@ describe('toDoController', () => {
             await toDoController.createNewList(mockReq, mockRes);
 
             expect(mockRes.status).toHaveBeenCalledWith(500);
-            expect(mockRes.send).toHaveBeenCalledWith({ status: 'FAIL', errorMessage: mockError.message });
+            expect(mockRes.json).toHaveBeenCalledWith({ status: 'FAIL', errorMessage: mockError.message });
         });
     });
 
@@ -83,7 +83,7 @@ describe('toDoController', () => {
             await toDoController.getListById(mockReq, mockRes);
 
             expect(mockRes.status).toHaveBeenCalledWith(500);
-            expect(mockRes.send).toHaveBeenCalledWith({ status: 'FAIL', errorMessage: mockError.message });
+            expect(mockRes.json).toHaveBeenCalledWith({ status: 'FAIL', errorMessage: mockError.message });
         });
     });
 

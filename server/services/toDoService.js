@@ -1,7 +1,10 @@
 const toDoRepository = require("../repositories/toDoRepository");
 
 const createNewList = async (reqBody) => {
-    return await toDoRepository.createNewList(reqBody.name);
+    if (!reqBody.name || reqBody.name.trim() === '') {
+        throw new Error('List name cannot be empty');
+    }
+    return await toDoRepository.createNewList(reqBody.name.trim());
 };
 
 const getAllLists = async () => {
@@ -9,7 +12,11 @@ const getAllLists = async () => {
 };
 
 const getListById = async (listId) => {
-    return await toDoRepository.getListById(listId);
+    const list = await toDoRepository.getListById(listId);
+    if (!list) {
+        throw new Error('List not found');
+    }
+    return list;
 };
 
 const deleteList = async (listId) => {

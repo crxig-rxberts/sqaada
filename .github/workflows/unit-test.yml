@@ -17,8 +17,7 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies (root)
-        run: |
-          sudo npm i
+        run: sudo npm i
 
       - name: Install dependencies (client)
         run: |
@@ -26,11 +25,25 @@ jobs:
           sudo npm i
           cd ..
 
+      - name: Set up DynamoDB Local
+        run: |
+          docker-compose up -d
+          sleep 10
+
       - name: Run unit tests
         run: npm run unit-test
+        env:
+          DYNAMODB_ENDPOINT: http://localhost:8000
+          AWS_ACCESS_KEY: dummy
+          AWS_ACCESS_KEY_SECRET: dummy
+          AWS_ACCESS_SESSION_TOKEN: dummy
 
       - name: Upload coverage reports
         uses: actions/upload-artifact@v3
         with:
           name: coverage-report
           path: coverage/
+
+      - name: Stop DynamoDB Local
+        if: always()
+        run: docker-compose down

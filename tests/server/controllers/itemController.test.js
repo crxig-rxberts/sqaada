@@ -77,7 +77,19 @@ describe('itemController', () => {
             expect(mockRes.json).toHaveBeenCalledWith({ status: 'SUCCESS', itemId: mockItemId });
         });
 
-        test('handles errors during item addition', async () => {
+        test('returns 404 when list is not found during item addition', async () => {
+            const mockError = new Error('List not found');
+            itemService.addItemToList.mockRejectedValue(mockError);
+            mockReq.params = { listId: '1' };
+            mockReq.body = { name: 'New Item' };
+
+            await itemController.addItemInList(mockReq, mockRes);
+
+            expect(mockRes.status).toHaveBeenCalledWith(404);
+            expect(mockRes.json).toHaveBeenCalledWith({ status: 'FAIL', errorMessage: 'List not found' });
+        });
+
+        test('handles other errors during item addition', async () => {
             const mockError = new Error('Test error');
             itemService.addItemToList.mockRejectedValue(mockError);
             mockReq.params = { listId: '1' };
@@ -86,23 +98,48 @@ describe('itemController', () => {
             await itemController.addItemInList(mockReq, mockRes);
 
             expect(mockRes.status).toHaveBeenCalledWith(500);
-            expect(mockRes.send).toHaveBeenCalledWith({ status: 'FAIL', errorMessage: mockError.message });
+            expect(mockRes.json).toHaveBeenCalledWith({ status: 'FAIL', errorMessage: 'Test error' });
         });
     });
 
     describe('updateItemInList', () => {
         test('returns success on successful item update', async () => {
-            itemService.updateItemInList.mockResolvedValue({});
+            const mockUpdatedItem = { id: '123', name: 'Updated Item' };
+            itemService.updateItemInList.mockResolvedValue(mockUpdatedItem);
             mockReq.params = { listId: '1', itemId: '123' };
             mockReq.body = { name: 'Updated Item' };
 
             await itemController.updateItemInList(mockReq, mockRes);
 
             expect(itemService.updateItemInList).toHaveBeenCalledWith('1', '123', mockReq.body);
-            expect(mockRes.json).toHaveBeenCalledWith({ status: 'SUCCESS', updatedItem: {} });
+            expect(mockRes.json).toHaveBeenCalledWith({ status: 'SUCCESS', updatedItem: mockUpdatedItem });
         });
 
-        test('handles errors during item update', async () => {
+        test('returns 404 when list is not found during item update', async () => {
+            const mockError = new Error('List not found');
+            itemService.updateItemInList.mockRejectedValue(mockError);
+            mockReq.params = { listId: '1', itemId: '123' };
+            mockReq.body = { name: 'Updated Item' };
+
+            await itemController.updateItemInList(mockReq, mockRes);
+
+            expect(mockRes.status).toHaveBeenCalledWith(404);
+            expect(mockRes.json).toHaveBeenCalledWith({ status: 'FAIL', errorMessage: 'List not found' });
+        });
+
+        test('returns 404 when item is not found during item update', async () => {
+            const mockError = new Error('Item not found in the list');
+            itemService.updateItemInList.mockRejectedValue(mockError);
+            mockReq.params = { listId: '1', itemId: '123' };
+            mockReq.body = { name: 'Updated Item' };
+
+            await itemController.updateItemInList(mockReq, mockRes);
+
+            expect(mockRes.status).toHaveBeenCalledWith(404);
+            expect(mockRes.json).toHaveBeenCalledWith({ status: 'FAIL', errorMessage: 'Item not found in the list' });
+        });
+
+        test('handles other errors during item update', async () => {
             const mockError = new Error('Test error');
             itemService.updateItemInList.mockRejectedValue(mockError);
             mockReq.params = { listId: '1', itemId: '123' };
@@ -111,13 +148,13 @@ describe('itemController', () => {
             await itemController.updateItemInList(mockReq, mockRes);
 
             expect(mockRes.status).toHaveBeenCalledWith(500);
-            expect(mockRes.send).toHaveBeenCalledWith({ status: 'FAIL', errorMessage: mockError.message });
+            expect(mockRes.json).toHaveBeenCalledWith({ status: 'FAIL', errorMessage: 'Test error' });
         });
     });
 
     describe('deleteItemFromList', () => {
         test('returns success on successful item deletion', async () => {
-            itemService.deleteItemFromList.mockResolvedValue({});
+            itemService.deleteItemFromList.mockResolvedValue();
             mockReq.params = { listId: '1', itemId: '123' };
 
             await itemController.deleteItemFromList(mockReq, mockRes);
@@ -126,7 +163,29 @@ describe('itemController', () => {
             expect(mockRes.json).toHaveBeenCalledWith({ status: 'SUCCESS' });
         });
 
-        test('handles errors during item deletion', async () => {
+        test('returns 404 when list is not found during item deletion', async () => {
+            const mockError = new Error('List not found');
+            itemService.deleteItemFromList.mockRejectedValue(mockError);
+            mockReq.params = { listId: '1', itemId: '123' };
+
+            await itemController.deleteItemFromList(mockReq, mockRes);
+
+            expect(mockRes.status).toHaveBeenCalledWith(404);
+            expect(mockRes.json).toHaveBeenCalledWith({ status: 'FAIL', errorMessage: 'List not found' });
+        });
+
+        test('returns 404 when item is not found during item deletion', async () => {
+            const mockError = new Error('Item not found in the list');
+            itemService.deleteItemFromList.mockRejectedValue(mockError);
+            mockReq.params = { listId: '1', itemId: '123' };
+
+            await itemController.deleteItemFromList(mockReq, mockRes);
+
+            expect(mockRes.status).toHaveBeenCalledWith(404);
+            expect(mockRes.json).toHaveBeenCalledWith({ status: 'FAIL', errorMessage: 'Item not found in the list' });
+        });
+
+        test('handles other errors during item deletion', async () => {
             const mockError = new Error('Test error');
             itemService.deleteItemFromList.mockRejectedValue(mockError);
             mockReq.params = { listId: '1', itemId: '123' };
@@ -134,7 +193,7 @@ describe('itemController', () => {
             await itemController.deleteItemFromList(mockReq, mockRes);
 
             expect(mockRes.status).toHaveBeenCalledWith(500);
-            expect(mockRes.send).toHaveBeenCalledWith({ status: 'FAIL', errorMessage: mockError.message });
+            expect(mockRes.json).toHaveBeenCalledWith({ status: 'FAIL', errorMessage: 'Test error' });
         });
     });
 });

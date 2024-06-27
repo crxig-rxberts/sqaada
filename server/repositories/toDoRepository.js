@@ -87,10 +87,6 @@ const getCurrentItems = async (listId) => {
         Key: { listId }
     }).promise();
 
-    if (!result.Item || !result.Item.items) {
-        throw new Error('List or items not found');
-    }
-
     return result.Item;
 };
 
@@ -168,11 +164,13 @@ const handleDynamoDBError = (operation, error) => {
     let consumerNote = `Unable to ${operation} due to an Internal Failure`;
     let debugMessage = `Unexpected failure during ${operation}`;
 
-    if (error.code === 'ConditionalCheckFailedException') {
+    if (error.message && error.message.includes('Item not found in the list')) {
+        consumerNote = error.message;
+        debugMessage = 'Item not found';
+    } else if (error.code === 'ConditionalCheckFailedException') {
         debugMessage = 'Condition check failed';
     } else if (error.code === 'ProvisionedThroughputExceededException') {
         debugMessage = 'Request rate is too high. Please retry with exponential backoff.';
-        // Implementing exponential backoff & retries can be done here
     } else if (error.code === 'ResourceNotFoundException') {
         debugMessage = 'Specified table not found';
     } else if (error.code === 'InternalServerError') {

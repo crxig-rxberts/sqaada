@@ -157,6 +157,15 @@ describe('toDoRepository', () => {
             }));
         });
 
+        test('handles error when item is not found in the list', async () => {
+            dynamoDb.get.mockReturnValueOnce({
+                promise: jest.fn().mockResolvedValue({ Item: { listId: '1', items: [] } })
+            });
+
+            await expect(toDoRepository.updateItemInList('1', '123', { name: 'Updated Item' }))
+                .rejects.toThrow('Item not found in the list');
+        });
+
         test('handles error when updating an item in a list', async () => {
             dynamoDb.get.mockReturnValueOnce({
                 promise: jest.fn().mockResolvedValue({ Item: { listId: '1', items: [{ itemId: '123', name: 'Old Item' }] } })
@@ -165,7 +174,8 @@ describe('toDoRepository', () => {
                 promise: jest.fn().mockRejectedValue(new Error('DynamoDB error'))
             });
 
-            await expect(toDoRepository.updateItemInList('1', '123', { name: 'Updated Item' })).rejects.toThrow('Unable to updateItemInList due to an Internal Failure.');
+            await expect(toDoRepository.updateItemInList('1', '123', { name: 'Updated Item' }))
+                .rejects.toThrow('Unable to updateItemInList due to an Internal Failure');
         });
     });
 
@@ -191,6 +201,15 @@ describe('toDoRepository', () => {
             });
         });
 
+        test('handles error when item is not found in the list', async () => {
+            dynamoDb.get.mockReturnValueOnce({
+                promise: jest.fn().mockResolvedValue({ Item: { listId: '1', items: [] } })
+            });
+
+            await expect(toDoRepository.deleteItemFromList('1', '123'))
+                .rejects.toThrow('Item not found in the list');
+        });
+
         test('handles error when deleting an item from a list', async () => {
             dynamoDb.get.mockReturnValueOnce({
                 promise: jest.fn().mockResolvedValue({ Item: { listId: '1', items: [{ itemId: '123', name: 'Item to Delete' }] } })
@@ -199,7 +218,8 @@ describe('toDoRepository', () => {
                 promise: jest.fn().mockRejectedValue(new Error('DynamoDB error'))
             });
 
-            await expect(toDoRepository.deleteItemFromList('1', '123')).rejects.toThrow('Unable to Delete Item From List due to an Internal Failure.');
+            await expect(toDoRepository.deleteItemFromList('1', '123'))
+                .rejects.toThrow('Unable to Delete Item From List due to an Internal Failure');
         });
     });
 
@@ -209,7 +229,8 @@ describe('toDoRepository', () => {
                 promise: jest.fn().mockRejectedValue({ code: 'ConditionalCheckFailedException' })
             });
 
-            await expect(toDoRepository.createNewList('New List')).rejects.toThrow('Unable to createNewList due to an Internal Failure.');
+            await expect(toDoRepository.createNewList('New List'))
+                .rejects.toThrow('Unable to createNewList due to an Internal Failure');
         });
 
         test('handles ProvisionedThroughputExceededException', async () => {
@@ -217,7 +238,8 @@ describe('toDoRepository', () => {
                 promise: jest.fn().mockRejectedValue({ code: 'ProvisionedThroughputExceededException' })
             });
 
-            await expect(toDoRepository.getAllLists()).rejects.toThrow('Unable to getAllLists due to an Internal Failure.');
+            await expect(toDoRepository.getAllLists())
+                .rejects.toThrow('Unable to getAllLists due to an Internal Failure');
         });
 
         test('handles ResourceNotFoundException', async () => {
@@ -225,7 +247,8 @@ describe('toDoRepository', () => {
                 promise: jest.fn().mockRejectedValue({ code: 'ResourceNotFoundException' })
             });
 
-            await expect(toDoRepository.getListById('1')).rejects.toThrow('Unable to getListById due to an Internal Failure.');
+            await expect(toDoRepository.getListById('1'))
+                .rejects.toThrow('Unable to getListById due to an Internal Failure');
         });
 
         test('handles InternalServerError', async () => {
@@ -233,7 +256,17 @@ describe('toDoRepository', () => {
                 promise: jest.fn().mockRejectedValue({ code: 'InternalServerError' })
             });
 
-            await expect(toDoRepository.addItemToList('1', { name: 'New Item' })).rejects.toThrow('Unable to addItemToList due to an Internal Failure.');
+            await expect(toDoRepository.addItemToList('1', { name: 'New Item' }))
+                .rejects.toThrow('Unable to addItemToList due to an Internal Failure');
+        });
+
+        test('handles Item not found error', async () => {
+            dynamoDb.get.mockReturnValue({
+                promise: jest.fn().mockResolvedValue({ Item: { listId: '1', items: [] } })
+            });
+
+            await expect(toDoRepository.updateItemInList('1', '123', { name: 'Updated Item' }))
+                .rejects.toThrow('Item not found in the list');
         });
     });
 
@@ -248,6 +281,15 @@ describe('toDoRepository', () => {
                 Key: { 'listId': listId }
             });
             expect(dynamoDb.delete().promise).toHaveBeenCalled();
+        });
+
+        test('handles error when deleting a list', async () => {
+            dynamoDb.delete.mockReturnValue({
+                promise: jest.fn().mockRejectedValue(new Error('DynamoDB error'))
+            });
+
+            await expect(toDoRepository.deleteList('123'))
+                .rejects.toThrow('Unable to Delete List due to an Internal Failure');
         });
     });
 });
