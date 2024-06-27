@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:8000/api';
+const API_BASE_URL = 'http://localhost:9000/api';
 
 async function createNewList(listName) {
     const response = await fetch(`${API_BASE_URL}/to-do-list/`, {

@@ -3,10 +3,13 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Home from '../Components/Home';
 import NewTODO from '../Components/NewTODO'
 
-const userName = "Craig";
 const routes = [
   {
     path: '/newTODO',
+    component: NewTODO
+  }, 
+  {
+    path: '/newTODO/to-do-list/:listId',
     component: NewTODO
   }, 
   {
