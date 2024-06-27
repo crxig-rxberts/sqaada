@@ -26,6 +26,30 @@ describe('toDoService', () => {
             const result = await toDoService.createNewList({ name: 'New List' });
             expect(result).toEqual(mockResult);
         });
+
+        test('throws error when name is empty', async () => {
+            await expect(toDoService.createNewList({ name: '' }))
+                .rejects.toThrow('List name cannot be empty');
+            expect(toDoRepository.createNewList).not.toHaveBeenCalled();
+        });
+
+        test('throws error when name is only whitespace', async () => {
+            await expect(toDoService.createNewList({ name: '   ' }))
+                .rejects.toThrow('List name cannot be empty');
+            expect(toDoRepository.createNewList).not.toHaveBeenCalled();
+        });
+
+        test('throws error when name is not provided', async () => {
+            await expect(toDoService.createNewList({}))
+                .rejects.toThrow('List name cannot be empty');
+            expect(toDoRepository.createNewList).not.toHaveBeenCalled();
+        });
+
+        test('trims whitespace from name before calling repository', async () => {
+            const mockName = '  New List  ';
+            await toDoService.createNewList({ name: mockName });
+            expect(toDoRepository.createNewList).toHaveBeenCalledWith('New List');
+        });
     });
 
     describe('getAllLists', () => {
@@ -44,16 +68,19 @@ describe('toDoService', () => {
 
     describe('getListById', () => {
         test('calls repository.getListById with correct listId', async () => {
-            const listId = '123';
-            await toDoService.getListById(listId);
-            expect(toDoRepository.getListById).toHaveBeenCalledWith(listId);
-        });
-
-        test('returns the result from repository.getListById', async () => {
             const mockList = { id: 'list-id', name: 'Test List' };
             toDoRepository.getListById.mockResolvedValue(mockList);
-            const result = await toDoService.getListById('list-id');
+            const result = await toDoService.getListById(mockList.id);
+            expect(toDoRepository.getListById).toHaveBeenCalledWith(mockList.id);
             expect(result).toEqual(mockList);
+        });
+
+        test('throws "List not found" error when list does not exist', async () => {
+            const nonExistentListId = 'non-existent-id';
+            toDoRepository.getListById.mockResolvedValue(null);
+
+            await expect(toDoService.getListById(nonExistentListId)).rejects.toThrow('List not found');
+            expect(toDoRepository.getListById).toHaveBeenCalledWith(nonExistentListId);
         });
     });
 
