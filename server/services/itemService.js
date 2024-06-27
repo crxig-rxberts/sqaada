@@ -37,11 +37,13 @@ const checkListAndItemsExistOrThrow = async (listId, itemId) => {
     if (list === undefined) {
         throw new Error('List not found');
     }
-    const item = list.items.find(item => item.itemId.toString() === itemId.toString());
-    if (!item && itemId != null) {
-        throw new Error('Item not found in the list');
+    if (itemId != null) {
+        const item = list.items.find(item => item.itemId.toString() === itemId.toString());
+        if (item === undefined) {
+            throw new Error('Item not found in the list');
+        }
+        return item;
     }
-    return item;
 }
 
 module.exports = {
