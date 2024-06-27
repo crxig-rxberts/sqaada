@@ -2,6 +2,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
+const cors = require('cors');
 const toDoRoutes = require('./routes/toDoRouter');
 const itemRoutes = require('./routes/itemRouter')
 const path = require('path'); // Node.js path module
@@ -13,6 +14,11 @@ const port = process.env.PORT || 9000;
 app.use(morgan('combined'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:3000' 
+  }));
+  
 
 // Apply Routers
 app.use('/api', toDoRoutes);
