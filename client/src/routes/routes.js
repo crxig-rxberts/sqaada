@@ -1,10 +1,10 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Home from '../Components/Home';
-import NewTODO from '../Components/NewTODO'
+import ListDetails from '../Components/ListDetails';
+import CreateList from '../Components/CreateList';
 
 const routes = [
   {
+<<<<<<< HEAD
     path: '/newTODO',
     component: NewTODO
   }, 
@@ -13,10 +13,19 @@ const routes = [
     component: NewTODO
   }, 
   {
+=======
+>>>>>>> 96d8a1b (Testing React Components)
     path: '/',
     component: Home
   },
-  ]
+  {
+    path: '/list/:listId',
+    component: ListDetails
+  },
+  {
+    path: '/create-list',
+    component: CreateList
+  }
+];
 
-
- export default routes;
+export default routes;
