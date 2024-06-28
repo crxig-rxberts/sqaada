@@ -4,17 +4,6 @@ import CreateList from '../Components/CreateList';
 
 const routes = [
   {
-<<<<<<< HEAD
-    path: '/newTODO',
-    component: NewTODO
-  }, 
-  {
-    path: '/newTODO/to-do-list/:listId',
-    component: NewTODO
-  }, 
-  {
-=======
->>>>>>> 96d8a1b (Testing React Components)
     path: '/',
     component: Home
   },
