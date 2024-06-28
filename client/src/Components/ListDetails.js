@@ -69,7 +69,7 @@ const ListDetails = () => {
     return (
         <div className="container py-5">
             <h1 className="display-4 text-center mb-5">{list.name}</h1>
-            <button onClick={toggleModal} className="btn btn-primary mb-4">Add New Item</button>
+            <button onClick={toggleModal} className="btn bg-info mb-4 shadow-sm">Add New Item</button>
 
             {!isModalOpen && (
                 <div className="row">
@@ -80,24 +80,40 @@ const ListDetails = () => {
                         ) : (
                             <div className="list-group">
                                 {list.items.map((item) => (
-                                    <div key={item.itemId} className="list-group-item list-group-item-action mb-3 rounded shadow-sm">
-                                        <div className="d-flex w-100 justify-content-between align-items-center mb-2">
-                                            <h5 className="mb-1">{item.name}</h5>
-                                            <small className="text-muted">{item.dueDate}</small>
-                                        </div>
-                                        <p className="mb-2">{item.description}</p>
-                                        <div className="d-flex justify-content-between align-items-center">
-                                            <select
-                                                className="form-select w-50"
-                                                value={item.status}
-                                                onChange={(e) => handleUpdateItem(item.itemId, { ...item, status: e.target.value })}
-                                            >
-                                                <option value="TODO">To Do</option>
-                                                <option value="FLAGGED">Flagged</option>
-                                                <option value="COMPLETED">Completed</option>
-                                            </select>
-                                            <button className="btn btn-danger btn-sm" onClick={() => handleDeleteItem(item.itemId)}>Delete</button>
-                                        </div>
+                                    <div 
+                                    key={item.itemId} 
+                                    className={`list-group-item list-group-item-action mb-3 rounded shadow-sm position-relative ${
+                                        item.status === 'COMPLETED' ? 'bg-success bg-opacity-25' : item.status === 'FLAGGED'  ? 'bg-warning bg-opacity-25' : ''
+                                    }`}
+                                    >
+                                    {item.status === 'FLAGGED' && (
+                                        <span className="position-absolute top-0 end-0 translate-middle p-2 bg-danger border border-light rounded-circle">
+                                        <span className="visually-hidden">Flagged item</span>
+                                        </span>
+                                    )}
+                                    <div className="d-flex w-100 justify-content-between align-items-center mb-2">
+                                        <h5 className="mb-1">{item.name}</h5>
+                                        <small className="text-muted">{item.dueDate}</small>
+                                    </div>
+                                    <p className="mb-2">{item.description}</p>
+                                    <div className="d-flex justify-content-between align-items-center">
+                                        <select
+                                        className="form-select w-50"
+                                        value={item.status}
+                                        onChange={(e) => handleUpdateItem(item.itemId, { ...item, status: e.target.value })}
+                                        disabled={item.status === 'COMPLETED'}
+                                        >
+                                        <option value="TODO">To Do</option>
+                                        <option value="FLAGGED">Flagged</option>
+                                        <option value="COMPLETED">Completed</option>
+                                        </select>
+                                        <button 
+                                        className="btn btn-danger btn-sm" 
+                                        onClick={() => handleDeleteItem(item.itemId)}
+                                        >
+                                        Delete
+                                        </button>
+                                    </div>
                                     </div>
                                 ))}
                             </div>
@@ -107,7 +123,7 @@ const ListDetails = () => {
             )}
 
             {isModalOpen && (
-                <div className="modal d-block" tabIndex="-1" role="dialog">
+                <div className="modal d-block align-content-center" tabIndex="-1" role="dialog">
                     <div className="modal-dialog" role="document">
                         <div className="modal-content">
                             <div className="modal-header">

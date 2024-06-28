@@ -3,6 +3,8 @@ import 'bootstrap/dist/css/bootstrap.css';
 import Navbar from './Components/Navbar';
 import routes from './routes/routes';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import './App.css';
+
 
 const App = () => {
     return (
