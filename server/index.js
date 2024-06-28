@@ -7,7 +7,7 @@ const itemRoutes = require('./routes/itemRouter')
 const path = require('path'); // Node.js path module
 
 const app = express();
-const port = process.env.PORT || 9000;
+const port = process.env.PORT || 8080;
 
 // Morgan Middleware
 app.use(morgan('combined'));
