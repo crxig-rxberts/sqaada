@@ -48,9 +48,9 @@ const Home = () => {
               <Link to="/create-list" className="btn btn-primary btn-lg mt-3">Create New List</Link>
             </div>
         ) : (
-            <div className="row">
+            <div className="row justify-content-center">
               {lists.map((list) => (
-                  <div key={list.listId} className="col-md-4 mb-4">
+                  <div key={list.listId} className="col-lg-4 mb-4 ">
                     <div className="card h-100 shadow-sm">
                       <div className="card-body d-flex flex-column">
                         <h5 className="card-title">{list.name}</h5>
