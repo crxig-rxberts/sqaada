@@ -4,6 +4,7 @@ import { getAllLists, deleteList } from '../clients/toDoClient';
 
 const Home = () => {
   const [lists, setLists] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchLists().catch(error => {
@@ -13,12 +14,15 @@ const Home = () => {
 
   const fetchLists = async () => {
     try {
+      setLoading(true);
       const response = await getAllLists();
       if (response.status === 'SUCCESS') {
         setLists(response.lists);
       }
     } catch (error) {
       console.error('Error fetching lists:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -31,22 +35,38 @@ const Home = () => {
     }
   };
 
+  if (loading) {
+    return <div className="d-flex justify-content-center align-items-center vh-100"><div className="spinner-border text-primary" role="status"></div></div>;
+  }
+
   return (
-      <div>
-        <h1 className="mb-4">Your ToDo Lists</h1>
+      <div className="container py-5">
+        <h1 className="display-4 text-center mb-5">Your ToDo Lists</h1>
         {lists.length === 0 ? (
-            <p>No lists found. Create a new one!</p>
+            <div className="text-center">
+              <p className="lead text-muted">No lists found. Create a new one!</p>
+              <Link to="/create-list" className="btn btn-primary btn-lg mt-3">Create New List</Link>
+            </div>
         ) : (
-            <ul className="list-group">
+            <div className="row">
               {lists.map((list) => (
-                  <li key={list.listId} className="list-group-item d-flex justify-content-between align-items-center">
-                    <Link to={`/list/${list.listId}`}>{list.name}</Link>
-                    <button className="btn btn-danger btn-sm" onClick={() => handleDeleteList(list.listId)}>Delete</button>
-                  </li>
+                  <div key={list.listId} className="col-md-4 mb-4">
+                    <div className="card h-100 shadow-sm">
+                      <div className="card-body d-flex flex-column">
+                        <h5 className="card-title">{list.name}</h5>
+                        <Link to={`/list/${list.listId}`} className="btn btn-outline-primary mt-auto mb-2">View List</Link>
+                        <button className="btn btn-outline-danger" onClick={() => handleDeleteList(list.listId)}>Delete List</button>
+                      </div>
+                    </div>
+                  </div>
               ))}
-            </ul>
+            </div>
         )}
-        <Link to="/create-list" className="btn btn-primary mt-3">Create New List</Link>
+        {lists.length > 0 && (
+            <div className="text-center mt-4">
+              <Link to="/create-list" className="btn btn-primary btn-lg">Create New List</Link>
+            </div>
+        )}
       </div>
   );
 };
