@@ -1,89 +1,57 @@
+const axios = require('axios');
 const API_BASE_URL = 'http://localhost:8080/api';
 
+const axiosInstance = axios.create({
+    baseURL: API_BASE_URL,
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    validateStatus: function (status) {
+        return status >= 200 && status < 599;
+    },
+});
+
 async function createNewList(listName) {
-    const response = await fetch(`${API_BASE_URL}/to-do-list/`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ name: listName })
-    });
-    return response.json();
+    const response = await axiosInstance.post('/to-do-list/', { name: listName });
+    return response.data;
 }
 
 async function getAllLists() {
-    const response = await fetch(`${API_BASE_URL}/to-do-list/`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    });
-    return response.json();
+    const response = await axiosInstance.get('/to-do-list/');
+    return response.data;
 }
 
 async function getListById(listId) {
-    const response = await fetch(`${API_BASE_URL}/to-do-list/${listId}`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    });
-    return response.json();
+    const response = await axiosInstance.get(`/to-do-list/${listId}`);
+    return response.data;
 }
 
 async function deleteList(listId) {
-    const response = await fetch(`${API_BASE_URL}/to-do-list/${listId}`, {
-        method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    });
-    return response.json();
+    const response = await axiosInstance.delete(`/to-do-list/${listId}`);
+    return response.data;
 }
 
 async function addItemInList(listId, item) {
-    const response = await fetch(`${API_BASE_URL}/to-do-list/${listId}`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(item)
-    });
-    return response.json();
+    const response = await axiosInstance.post(`/to-do-list/${listId}`, item);
+    return response.data;
 }
 
 async function getItemFromList(listId, itemId) {
-    const response = await fetch(`${API_BASE_URL}/to-do-list/${listId}/${itemId}`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    });
-    return response.json();
+    const response = await axiosInstance.get(`/to-do-list/${listId}/${itemId}`);
+    return response.data;
 }
 
 async function updateItemInList(listId, itemId, item) {
-    const response = await fetch(`${API_BASE_URL}/to-do-list/${listId}/${itemId}`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(item)
-    });
-    return response.json();
+    const response = await axiosInstance.put(`/to-do-list/${listId}/${itemId}`, item);
+    return response.data;
 }
 
 async function deleteItemFromList(listId, itemId) {
-    const response = await fetch(`${API_BASE_URL}/to-do-list/${listId}/${itemId}`, {
-        method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    });
-    return response.json();
+    const response = await axiosInstance.delete(`/to-do-list/${listId}/${itemId}`);
+    return response.data;
 }
 
-export {
+module.exports = {
     createNewList,
     getAllLists,
     getListById,
