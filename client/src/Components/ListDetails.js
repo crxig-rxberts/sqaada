@@ -69,7 +69,7 @@ const ListDetails = () => {
     return (
         <div className="container py-5">
             <h1 className="display-4 text-center mb-5">{list.name}</h1>
-            <button onClick={toggleModal} className="btn btn-primary mb-4">Add New Item</button>
+            <button onClick={toggleModal} className="btn bg-info mb-4 shadow-sm">Add New Item</button>
 
             {!isModalOpen && (
                 <div className="row">

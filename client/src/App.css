@@ -5,6 +5,8 @@ body, html {
   font-family: Arial, sans-serif;
   background-image: url(./clouds.jpg);
   background-size:cover;
+  background-attachment: fixed;
+  background-position: center;
 }
 
 #root{
@@ -74,6 +76,9 @@ body {
 
 .navbar {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 .navbar-brand {
