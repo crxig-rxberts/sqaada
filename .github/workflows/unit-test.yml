@@ -1,11 +1,11 @@
-name: Run Unit Tests
+name: Run Tests
 
 on:
   push:
     branches: "**"
 
 jobs:
-  test-unit-testing:
+  test:
     runs-on: ubuntu-latest
 
     steps:
@@ -32,6 +32,14 @@ jobs:
 
       - name: Run unit tests
         run: npm run unit-test
+        env:
+          DYNAMODB_ENDPOINT: http://localhost:8000
+          AWS_ACCESS_KEY: dummy
+          AWS_ACCESS_KEY_SECRET: dummy
+          AWS_ACCESS_SESSION_TOKEN: dummy
+
+      - name: Run integration tests
+        run: npm run integration-test
         env:
           DYNAMODB_ENDPOINT: http://localhost:8000
           AWS_ACCESS_KEY: dummy
