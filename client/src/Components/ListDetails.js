@@ -7,6 +7,7 @@ const ListDetails = () => {
     const [list, setList] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [newItem, setNewItem] = useState({ name: '', description: '', status: 'TODO', dueDate: '' });
+    const [sortOrder, setSortOrder] = useState('asc');
 
     const fetchList = useCallback(async () => {
         try {
@@ -64,6 +65,28 @@ const ListDetails = () => {
         setIsModalOpen(!isModalOpen);
     };
 
+    const sortItems = () => {
+        if (list) {
+            const sortedItems = [...list.items].sort((a, b) => {
+                const dateA = new Date(a.dueDate);
+                const dateB = new Date(b.dueDate);
+                return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+            });
+            setList({ ...list, items: sortedItems });
+        }
+    };
+
+    const toggleSortOrder = () => {
+        setSortOrder(prevOrder => (prevOrder === 'asc' ? 'desc' : 'asc'));
+        sortItems();
+    };
+
+    useEffect(() => {
+        if (list) {
+            sortItems();
+        }
+    }, [list, sortOrder]);
+
     if (!list) return <div className="d-flex justify-content-center align-items-center vh-100"><div className="spinner-border text-primary" role="status"></div></div>;
 
     return (
@@ -75,6 +98,9 @@ const ListDetails = () => {
                 <div className="row">
                     <div className="col-md-12">
                         <h2 className="h4 mb-4">Items</h2>
+                        <button onClick={toggleSortOrder} className="btn bg-success mb-4 shadow-sm float-left">
+                            Sort by Date ({sortOrder === 'asc' ? 'Ascending' : 'Descending'})
+                        </button>
                         {list.items.length === 0 ? (
                             <p className="text-muted">No items in this list. Add one using the button above!</p>
                         ) : (
