@@ -1,6 +1,7 @@
 import Home from '../Components/Home';
 import ListDetails from '../Components/ListDetails';
 import CreateList from '../Components/CreateList';
+import PrivacyPolicy from '../Components/PrivacyPolicy';
 
 const routes = [
   {
@@ -14,7 +15,11 @@ const routes = [
   {
     path: '/create-list',
     component: CreateList
-  }
+  },
+  {
+    path: '/privacyandpolicies',
+    component: PrivacyPolicy
+  },
 ];
 
 export default routes;
