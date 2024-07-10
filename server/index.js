@@ -9,15 +9,16 @@ const http = require("http");
 
 const app = express();
 const port = process.env.PORT || 8080;
+const SERVER_IP = process.env.SERVER_IP || 'localhost'
 
 // Middleware / Req/Res Intercept
 app.use(morgan('combined'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-// Apply CORS middleware before routes
+// Apply CORS
 app.use(cors({
-    origin: ['http://localhost:3000', 'http://localhost:8080', 'http://localhost'],
+    origin: [`http://${SERVER_IP}:3000`, `http://${SERVER_IP}:8080`, `http://${SERVER_IP}`],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization']
@@ -41,7 +42,7 @@ app.get('*', (req, res) => {
 // Start server
 const server = http.createServer(app);
 server.listen(port, () => {
-    console.log(`Server started at port ${port}`);
+    console.log(`Server started at port ${SERVER_IP}:${port}`);
 });
 
 module.exports = server;

@@ -1,7 +1,7 @@
 const { v4: uuidv4 } = require('uuid');
 const dynamoDb = require('../config/db');
 
-const TABLE_NAME = 'to-do-table';
+const TABLE_NAME = process.env.DYNAMODB_TABLE_NAME || 'to-do-table';
 
 const createNewList = async (listName) => {
     const listId = uuidv4();

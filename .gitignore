@@ -4,3 +4,13 @@ node_modules
 
 package-lock.json
 coverage
+
+.terraform
+
+
+*.tfstate
+*.tfstate.*
+
+# Crash log files
+crash.log
+crash.*.log

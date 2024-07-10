@@ -1,0 +1,6 @@
+app_version = "ci"
+aws_region = "eu-west-1"
+env_name = "nonprod-ci"
+resource_cpu = "256"
+resource_memory = "512"
+service_name = "to-do-app"
