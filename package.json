@@ -12,11 +12,10 @@
     "integration-test": "jest --runInBand --testTimeout=10000 'tests/integration'",
     "build": "cd client && npm run build",
     "docker-build": "docker build -t to-do-app .",
-    "docker-run": "docker run -p 9000:9000 to-do-app",
-    "docker-run-local": "docker run -p 9000:9000 -e DYNAMODB_ENDPOINT=http://host.docker.internal:8000 to-do-app",
-    "docker-start": "npm run docker-build && npm run docker-run"
+    "docker-run-local": "docker run -p 8080:8080 -e DYNAMODB_ENDPOINT=http://host.docker.internal:8000 to-do-app",
+    "docker-start": "npm run docker-build && npm run docker-run-local"
   },
-  "author": "",
+  "author": "Craig Roberts, Alexander Keen",
   "license": "ISC",
   "dependencies": {
     "aws-sdk": "^2.1648.0",
@@ -25,7 +24,8 @@
     "cors": "^2.8.5",
     "express": "^4.19.2",
     "fetch": "^1.1.0",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.24.7",
@@ -36,11 +36,11 @@
     "@types/jest": "^29.5.12",
     "axios": "^1.7.2",
     "babel-jest": "^29.7.0",
+    "cross-env": "^7.0.3",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "jest-mock-extended": "^3.0.7",
     "jsdom": "^24.1.0",
-    "supertest": "^7.0.0",
-    "uuid": "^10.0.0"
+    "supertest": "^7.0.0"
   }
 }

@@ -1,11 +1,9 @@
 const { DynamoDB } = require('aws-sdk');
 
+// On deployment IAM is used to authenticate the server
 const dynamoDb = new DynamoDB.DocumentClient({
     endpoint: process.env.DYNAMODB_ENDPOINT || 'http://localhost:8000',
-    region: 'eu-west-1',
-    accessKeyId: process.env.AWS_ACCESS_KEY ||'dummy',
-    secretAccessKey: process.env.AWS_ACCESS_KEY_SECRET ||'dummy',
-    sessionToken: process.env.AWS_ACCESS_SESSION_TOKEN ||'dummy',
+    region: process.env.AWS_REGION || 'eu-west-1',
 });
 
 module.exports = dynamoDb;
