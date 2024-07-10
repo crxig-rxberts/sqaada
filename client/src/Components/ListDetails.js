@@ -1,11 +1,18 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
-import { getListById, addItemInList, updateItemInList, deleteItemFromList } from '../clients/toDoClient';
+import {
+    getListById,
+    addItemInList,
+    updateItemInList,
+    deleteItemFromList,
+    getItemFromList
+} from '../clients/toDoClient';
 
 const ListDetails = () => {
     const { listId } = useParams();
     const [list, setList] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [currentItem, setCurrentItem] = useState(null);
     const [newItem, setNewItem] = useState({ name: '', description: '', status: 'TODO', dueDate: '' });
     const [sortOrder, setSortOrder] = useState('asc');
 
@@ -61,8 +68,33 @@ const ListDetails = () => {
         }
     };
 
+    const handleItemClick = async (itemId) => {
+        try {
+            const response = await getItemFromList(listId, itemId);
+            if (response.status === 'SUCCESS') {
+                setCurrentItem(response.item);
+                setNewItem(response.item);
+                setIsModalOpen(true);
+            }
+        } catch (error) {
+            console.error('Error fetching item:', error);
+        }
+    };
+
+    const handleModalSubmit = async (e) => {
+        e.preventDefault();
+        if (currentItem) {
+            await handleUpdateItem(currentItem.itemId, newItem);
+        } else {
+            await handleAddItem(e);
+        }
+        setIsModalOpen(false);
+    };
+
     const toggleModal = () => {
         setIsModalOpen(!isModalOpen);
+        setCurrentItem(null);
+        setNewItem({ name: '', description: '', status: 'TODO', dueDate: '' });
     };
 
     const sortItems = () => {
@@ -93,7 +125,6 @@ const ListDetails = () => {
         <div className="container py-5">
             <h1 className="display-4 text-center mb-5">{list.name}</h1>
             <button onClick={toggleModal} className="btn bg-info mb-4 shadow-sm">Add New Item</button>
-
             {!isModalOpen && (
                 <div className="row">
                     <div className="col-md-12">
@@ -111,10 +142,10 @@ const ListDetails = () => {
                                     className={`list-group-item list-group-item-action mb-3 rounded shadow-sm position-relative ${
                                         item.status === 'COMPLETED' ? 'bg-success bg-opacity-25' : item.status === 'FLAGGED'  ? 'bg-warning bg-opacity-25' : ''
                                     }`}
-                                    >
+                                >
                                     {item.status === 'FLAGGED' && (
                                         <span className="position-absolute top-0 end-0 translate-middle p-2 bg-danger border border-light rounded-circle">
-                                        <span className="visually-hidden">Flagged item</span>
+                                            <span className="visually-hidden">Flagged item</span>
                                         </span>
                                     )}
                                     <div className="d-flex w-100 justify-content-between align-items-center mb-2">
@@ -124,40 +155,47 @@ const ListDetails = () => {
                                     <p className="mb-2">{item.description}</p>
                                     <div className="d-flex justify-content-between align-items-center">
                                         <select
-                                        className="form-select w-50"
-                                        value={item.status}
-                                        onChange={(e) => handleUpdateItem(item.itemId, { ...item, status: e.target.value })}
-                                        disabled={item.status === 'COMPLETED'}
+                                            className="form-select w-50"
+                                            value={item.status}
+                                            onChange={(e) => handleUpdateItem(item.itemId, { ...item, status: e.target.value })}
+                                            disabled={item.status === 'COMPLETED'}
                                         >
-                                        <option value="TODO">To Do</option>
-                                        <option value="FLAGGED">Flagged</option>
-                                        <option value="COMPLETED">Completed</option>
+                                            <option value="TODO">To Do</option>
+                                            <option value="FLAGGED">Flagged</option>
+                                            <option value="COMPLETED">Completed</option>
                                         </select>
-                                        <button 
-                                        className="btn btn-danger btn-sm" 
-                                        onClick={() => handleDeleteItem(item.itemId)}
-                                        >
-                                        Delete
-                                        </button>
+                                        <div class="btn-group">
+                                            <button 
+                                                className="btn btn-primary btn-md" 
+                                                onClick={(e) => { e.stopPropagation(); handleItemClick(item.itemId); }}
+                                            >
+                                                Edit
+                                            </button>
+                                            <button 
+                                                className="btn btn-danger btn-md ms-2" 
+                                                onClick={(e) => { e.stopPropagation(); handleDeleteItem(item.itemId); }}
+                                            >
+                                                Delete
+                                            </button>
+                                        </div>
                                     </div>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
-            )}
+            </div>
 
             {isModalOpen && (
                 <div className="modal d-block align-content-center" tabIndex="-1" role="dialog">
                     <div className="modal-dialog" role="document">
                         <div className="modal-content">
                             <div className="modal-header">
-                                <h5 className="modal-title">Add New Item</h5>
+                                <h5 className="modal-title">{currentItem ? 'Edit Item' : 'Add New Item'}</h5>
                                 <button type="button" className="btn-close" onClick={toggleModal} aria-label="Close"></button>
                             </div>
                             <div className="modal-body">
-                                <form onSubmit={handleAddItem}>
+                                <form onSubmit={handleModalSubmit}>
                                     <div className="mb-3">
                                         <input
                                             type="text"
@@ -189,13 +227,16 @@ const ListDetails = () => {
                                             className="form-select"
                                             value={newItem.status}
                                             onChange={(e) => setNewItem({ ...newItem, status: e.target.value })}
+                                            disabled={newItem.status === 'COMPLETED'}
                                         >
                                             <option value="TODO">To Do</option>
                                             <option value="FLAGGED">Flagged</option>
                                             <option value="COMPLETED">Completed</option>
                                         </select>
                                     </div>
-                                    <button type="submit" className="btn btn-primary w-100">Add Item</button>
+                                    <button type="submit" className="btn btn-primary w-100">
+                                        {currentItem ? 'Save Changes' : 'Add Item'}
+                                    </button>
                                 </form>
                             </div>
                         </div>
