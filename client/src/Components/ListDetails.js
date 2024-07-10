@@ -97,95 +97,84 @@ const ListDetails = () => {
         setNewItem({ name: '', description: '', status: 'TODO', dueDate: '' });
     };
 
-    const sortItems = () => {
-        if (list) {
-            const sortedItems = [...list.items].sort((a, b) => {
-                const dateA = new Date(a.dueDate);
-                const dateB = new Date(b.dueDate);
-                return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
-            });
-            setList({ ...list, items: sortedItems });
-        }
-    };
-
     const toggleSortOrder = () => {
-        setSortOrder(prevOrder => (prevOrder === 'asc' ? 'desc' : 'asc'));
-        sortItems();
+        setSortOrder(prevOrder => prevOrder === 'asc' ? 'desc' : 'asc');
     };
 
-    useEffect(() => {
-        if (list) {
-            sortItems();
-        }
-    }, [list, sortOrder]);
+    const sortedItems = list?.items.slice().sort((a, b) => {
+        const dateA = new Date(a.dueDate);
+        const dateB = new Date(b.dueDate);
+        return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+    });
 
     if (!list) return <div className="d-flex justify-content-center align-items-center vh-100"><div className="spinner-border text-primary" role="status"></div></div>;
 
     return (
         <div className="container py-5">
             <h1 className="display-4 text-center mb-5">{list.name}</h1>
-            <button onClick={toggleModal} className="btn bg-info mb-4 shadow-sm">Add New Item</button>
-            {!isModalOpen && (
-                <div className="row">
-                    <div className="col-md-12">
-                        <h2 className="h4 mb-4">Items</h2>
-                        <button onClick={toggleSortOrder} className="btn bg-success mb-4 shadow-sm float-left">
-                            Sort by Date ({sortOrder === 'asc' ? 'Ascending' : 'Descending'})
-                        </button>
-                        {list.items.length === 0 ? (
-                            <p className="text-muted">No items in this list. Add one using the button above!</p>
-                        ) : (
-                            <div className="list-group">
-                                {list.items.map((item) => (
-                                    <div 
+            <div className="d-flex justify-content-between align-items-center mb-4">
+                <button onClick={toggleModal} className="btn bg-info shadow-sm">Add New Item</button>
+                <button onClick={toggleSortOrder} className="btn btn-outline-secondary">
+                    Sort by Date {sortOrder === 'asc' ? '↑' : '↓'}
+                </button>
+            </div>
+
+            <div className="row">
+                <div className="col-md-12">
+                    <h2 className="h4 mb-4">Items</h2>
+                    {sortedItems.length === 0 ? (
+                        <p className="text-muted">No items in this list. Add one using the button above!</p>
+                    ) : (
+                        <div className="list-group">
+                            {sortedItems.map((item) => (
+                                <div 
                                     key={item.itemId} 
                                     className={`list-group-item list-group-item-action mb-3 rounded shadow-sm position-relative ${
                                         item.status === 'COMPLETED' ? 'bg-success bg-opacity-25' : item.status === 'FLAGGED'  ? 'bg-warning bg-opacity-25' : ''
                                     }`}
-                                    >
-                                        {item.status === 'FLAGGED' && (
-                                            <span className="position-absolute top-0 end-0 translate-middle p-2 bg-danger border border-light rounded-circle">
-                                                <span className="visually-hidden">Flagged item</span>
-                                            </span>
-                                        )}
-                                        <div className="d-flex w-100 justify-content-between align-items-center mb-2">
-                                            <h5 className="mb-1">{item.name}</h5>
-                                            <small className="text-muted">{item.dueDate}</small>
-                                        </div>
-                                        <p className="mb-2">{item.description}</p>
-                                        <div className="d-flex justify-content-between align-items-center">
-                                            <select
-                                                className="form-select w-50"
-                                                value={item.status}
-                                                onChange={(e) => handleUpdateItem(item.itemId, { ...item, status: e.target.value })}
-                                                disabled={item.status === 'COMPLETED'}
+                                >
+                                    {item.status === 'FLAGGED' && (
+                                        <span className="position-absolute top-0 end-0 translate-middle p-2 bg-danger border border-light rounded-circle">
+                                            <span className="visually-hidden">Flagged item</span>
+                                        </span>
+                                    )}
+                                    <div className="d-flex w-100 justify-content-between align-items-center mb-2">
+                                        <h5 className="mb-1">{item.name}</h5>
+                                        <small className="text-muted">{item.dueDate}</small>
+                                    </div>
+                                    <p className="mb-2">{item.description}</p>
+                                    <div className="d-flex justify-content-between align-items-center">
+                                        <select
+                                            className="form-select w-50"
+                                            value={item.status}
+                                            onChange={(e) => handleUpdateItem(item.itemId, { ...item, status: e.target.value })}
+                                            disabled={item.status === 'COMPLETED'}
+                                        >
+                                            <option value="TODO">To Do</option>
+                                            <option value="FLAGGED">Flagged</option>
+                                            <option value="COMPLETED">Completed</option>
+                                        </select>
+                                        <div className="btn-group">
+                                            <button 
+                                                className="btn btn-primary btn-md" 
+                                                onClick={(e) => { e.stopPropagation(); handleItemClick(item.itemId); }}
                                             >
-                                                <option value="TODO">To Do</option>
-                                                <option value="FLAGGED">Flagged</option>
-                                                <option value="COMPLETED">Completed</option>
-                                            </select>
-                                            <div class="btn-group">
-                                                <button 
-                                                    className="btn btn-primary btn-md" 
-                                                    onClick={(e) => { e.stopPropagation(); handleItemClick(item.itemId); }}
-                                                >
-                                                    Edit
-                                                </button>
-                                                <button 
-                                                    className="btn btn-danger btn-md ms-2" 
-                                                    onClick={(e) => { e.stopPropagation(); handleDeleteItem(item.itemId); }}
-                                                >
-                                                    Delete
-                                                </button>
-                                                </div>
-                                            </div>
+                                                Edit
+                                            </button>
+                                            <button 
+                                                className="btn btn-danger btn-md ms-2" 
+                                                onClick={(e) => { e.stopPropagation(); handleDeleteItem(item.itemId); }}
+                                            >
+                                                Delete
+                                            </button>
                                         </div>
-                                    ))}
+                                    </div>
                                 </div>
-                            )}
+                            ))}
                         </div>
-                    </div>
-                )}
+                    )}
+                </div>
+            </div>
             {isModalOpen && (
                 <div className="modal d-block align-content-center" tabIndex="-1" role="dialog">
                     <div className="modal-dialog" role="document">
