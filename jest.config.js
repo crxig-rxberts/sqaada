@@ -10,6 +10,9 @@ module.exports = {
     transform: {
         '^.+\\.jsx?$': 'babel-jest',
     },
+    transformIgnorePatterns: [
+        'client/node_modules/(?!(react-router-dom)/)'
+    ],
     moduleFileExtensions: ['js', 'jsx'],
     testPathIgnorePatterns: ['/node_modules/', '/build/'],
     collectCoverageFrom: [
