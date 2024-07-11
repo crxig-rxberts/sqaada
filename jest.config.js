@@ -5,13 +5,13 @@ module.exports = {
     moduleNameMapper: {
         '\\.(css|less|sass|scss)$': '<rootDir>/tests/__mocks__/styleMock.js',
         '\\.(gif|ttf|eot|svg)$': '<rootDir>/tests/__mocks__/fileMock.js',
-        '^react-router-dom$': '<rootDir>/client/node_modules/react-router-dom/dist/index.js',
+        '^react-router-dom$': '<rootDir>/node_modules/react-router-dom/dist/index.js',
     },
     transform: {
         '^.+\\.jsx?$': 'babel-jest',
     },
     transformIgnorePatterns: [
-        'client/node_modules/(?!(react-router-dom)/)'
+        'node_modules/(?!(react-router-dom)/)'
     ],
     moduleFileExtensions: ['js', 'jsx'],
     testPathIgnorePatterns: ['/node_modules/', '/build/'],
