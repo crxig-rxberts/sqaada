@@ -27,7 +27,7 @@ We have endevoured to create an intuative AI that is easy to navigate. It follow
 ![Complete TODO](./screenshots/completeTODO.png)
 
 ### Urgent TODO
-![Urgent TODO](./screenshots/ImportantTODO.png)
+![Urgent TODO](./screenshots/importantTODO.png)
 
 ### Date Sort Feature :
 ![Date Sort 1](./screenshots/dateSort1.png)
