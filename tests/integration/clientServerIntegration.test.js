@@ -16,13 +16,12 @@ const waitForServer = async (url, maxRetries = 10, delay = 1000) => {
 };
 
 describe('ToDo List API Integration Tests', () => {
-    jest.setTimeout(10000);
     let server;
 
     beforeAll(async () => {
         server = require('../../server/index');
         await waitForServer('http://localhost:8080');
-    }, 60000);
+    });
 
     afterAll((done) => {
         if (server && server.close) {
