@@ -1,6 +1,6 @@
 import React from 'react';
-import PolicySection from './components/PolicySection';
-import Card from './components/Card';
+import PolicySection from './PolicySection';
+import Card from './Card';
 
 const PrivacyPolicy = () => {
     const policySections = [
