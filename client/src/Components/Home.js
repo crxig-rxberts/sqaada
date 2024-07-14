@@ -1,25 +1,8 @@
-jsxCopy// components/ListItem.js
-import React from 'react';
-import { Link } from 'react-router-dom';
-
-const ListItem = ({ list, onDelete }) => (
-    <div className="card h-100 shadow-sm">
-        <div className="card-body d-flex flex-column">
-            <h5 className="card-title">{list.name}</h5>
-            <Link to={`/list/${list.listId}`} className="btn btn-outline-primary mt-auto mb-2">View List</Link>
-            <button className="btn btn-outline-danger" onClick={() => onDelete(list.listId)}>Delete List</button>
-        </div>
-    </div>
-);
-
-export default ListItem;
-
-// Home.js
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getAllLists, deleteList } from '../clients/toDoClient';
-import ListItem from './components/ListItem';
-import LoadingSpinner from './components/LoadingSpinner';
+import ListItem from './ListItem';
+import LoadingSpinner from './Loadingspinner';
 
 const Home = () => {
     const [lists, setLists] = useState([]);
