@@ -11,42 +11,42 @@ jest.mock('../../client/src/Components/PrivacyPolicy', () => () => <div data-tes
 
 // Mock the BrowserRouter in the App component
 jest.mock('react-router-dom', () => ({
-    ...jest.requireActual('react-router-dom'),
-    BrowserRouter: ({ children }) => <div>{children}</div>,
+  ...jest.requireActual('react-router-dom'),
+  BrowserRouter: ({ children }) => <div>{children}</div>,
 }));
 
 // Helper function to render the App with a specific route
 const renderWithRouter = (route) => {
-    return render(
-        <MemoryRouter initialEntries={[route]}>
-            <App />
-        </MemoryRouter>
-    );
+  return render(
+    <MemoryRouter initialEntries={[route]}>
+      <App />
+    </MemoryRouter>
+  );
 };
 
 describe('App routing', () => {
-    test('renders Navbar on all routes', () => {
-        renderWithRouter('/');
-        expect(screen.getByTestId('navbar')).toBeInTheDocument();
-    });
+  test('renders Navbar on all routes', () => {
+    renderWithRouter('/');
+    expect(screen.getByTestId('navbar')).toBeInTheDocument();
+  });
 
-    test('renders Home page on default route', () => {
-        renderWithRouter('/');
-        expect(screen.getByTestId('home')).toBeInTheDocument();
-    });
+  test('renders Home page on default route', () => {
+    renderWithRouter('/');
+    expect(screen.getByTestId('home')).toBeInTheDocument();
+  });
 
-    test('renders Create List page on /create-list route', () => {
-        renderWithRouter('/create-list');
-        expect(screen.getByTestId('create-list')).toBeInTheDocument();
-    });
+  test('renders Create List page on /create-list route', () => {
+    renderWithRouter('/create-list');
+    expect(screen.getByTestId('create-list')).toBeInTheDocument();
+  });
 
-    test('renders List Details page on /list/:listId route', () => {
-        renderWithRouter('/list/123');
-        expect(screen.getByTestId('list-details')).toBeInTheDocument();
-    });
+  test('renders List Details page on /list/:listId route', () => {
+    renderWithRouter('/list/123');
+    expect(screen.getByTestId('list-details')).toBeInTheDocument();
+  });
 
-    test('renders Privacy Policy page on /privacyandpolicies route', () => {
-        renderWithRouter('/privacyandpolicies');
-        expect(screen.getByTestId('privacy-policy')).toBeInTheDocument();
-    });
+  test('renders Privacy Policy page on /privacyandpolicies route', () => {
+    renderWithRouter('/privacyandpolicies');
+    expect(screen.getByTestId('privacy-policy')).toBeInTheDocument();
+  });
 });
