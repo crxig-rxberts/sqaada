@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createNewList } from '../clients/toDoClient';
+import ListForm from './ListForm';
+import Card from './Card';
 
 const CreateList = () => {
-    const [listName, setListName] = useState('');
     const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleSubmit = async (listName) => {
         try {
             const response = await createNewList(listName);
             if (response.status === 'SUCCESS') {
@@ -22,27 +23,9 @@ const CreateList = () => {
         <div className="container py-5">
             <div className="row justify-content-center">
                 <div className="col-md-6">
-                    <div className="card shadow">
-                        <div className="card-body">
-                            <h1 className="card-title text-center mb-4">Create New ToDo List</h1>
-                            <form onSubmit={handleSubmit}>
-                                <div className="mb-3">
-                                    <label htmlFor="listName" className="form-label">List Name:</label>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        id="listName"
-                                        value={listName}
-                                        onChange={(e) => setListName(e.target.value)}
-                                        required
-                                    />
-                                </div>
-                                <div className="d-grid">
-                                    <button type="submit" className="btn btn-primary btn-lg">Create List</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+                    <Card title="Create New ToDo List">
+                        <ListForm onSubmit={handleSubmit} />
+                    </Card>
                 </div>
             </div>
         </div>
