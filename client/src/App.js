@@ -7,24 +7,24 @@ import './App.css';
 
 
 const App = () => {
-    return (
-        <Router>
-            <div className="App">
-                <Navbar />
-                <div className="container mt-4">
-                    <Routes>
-                        {routes.map((route) => (
-                            <Route
-                                key={route.path}
-                                path={route.path}
-                                element={<route.component />}
-                            />
-                        ))}
-                    </Routes>
-                </div>
-            </div>
-        </Router>
-    );
+  return (
+    <Router>
+      <div className="App">
+        <Navbar />
+        <div className="container mt-4">
+          <Routes>
+            {routes.map((route) => (
+              <Route
+                key={route.path}
+                path={route.path}
+                element={<route.component />}
+              />
+            ))}
+          </Routes>
+        </div>
+      </div>
+    </Router>
+  );
 };
 
 export default App;

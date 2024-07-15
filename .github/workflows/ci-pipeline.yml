@@ -1,35 +1,45 @@
-name: Run Tests
+name: CI Pipeline
 
 on:
   push:
     branches: "**"
+  pull_request:
+    branches: [ main ]
 
 jobs:
-  test:
+  lint:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
-
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '20'
-
-      - name: Install dependencies (root)
-        run: sudo npm i
-
-      - name: Install dependencies (client)
+      - name: Install dependencies
         run: |
-          cd client
-          sudo npm i
-          cd ..
+          npm ci
+          cd client && npm ci
+      - name: Run ESLint
+        run: |
+          npm run lint
 
+  test:
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        run: |
+          npm ci
+          cd client && npm ci
       - name: Set up DynamoDB Local
         run: |
           docker-compose up -d
           sleep 10
-
       - name: Run unit tests
         run: npm run unit-test
         env:
@@ -37,7 +47,6 @@ jobs:
           AWS_ACCESS_KEY: dummy
           AWS_ACCESS_KEY_SECRET: dummy
           AWS_ACCESS_SESSION_TOKEN: dummy
-
       - name: Run integration tests
         run: npm run integration-test
         env:
@@ -45,13 +54,28 @@ jobs:
           AWS_ACCESS_KEY: dummy
           AWS_ACCESS_KEY_SECRET: dummy
           AWS_ACCESS_SESSION_TOKEN: dummy
-
       - name: Upload coverage reports
         uses: actions/upload-artifact@v3
         with:
           name: coverage-report
           path: coverage/
-
       - name: Stop DynamoDB Local
         if: always()
         run: docker-compose down
+
+  security:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run OWASP Dependency-Check
+        uses: dependency-check/Dependency-Check_Action@main
+        with:
+          project: 'sqaada'
+          path: '.'
+          format: 'HTML'
+      - name: Upload OWASP Dependency-Check report
+        uses: actions/upload-artifact@v3
+        with:
+          name: dependency-check-report
+          path: dependency-check-report.html
