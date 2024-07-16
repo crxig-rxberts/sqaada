@@ -1,19 +1,26 @@
-const AWS = require('aws-sdk');
+const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
+const { DynamoDBDocumentClient } = require("@aws-sdk/lib-dynamodb");
 
 const isLocal = process.env.NODE_ENV !== 'production';
 
+let clientConfig = {};
+
 if (isLocal) {
-  AWS.config.update({
+  clientConfig = {
     region: 'localhost',
     endpoint: 'http://localhost:8000',
-    accessKeyId: 'dummy',
-    secretAccessKey: 'dummy'
-  });
+    credentials: {
+      accessKeyId: 'dummy',
+      secretAccessKey: 'dummy'
+    }
+  };
 } else {
-  // Production configuration (uses IAM role)
-  AWS.config.update({ region: process.env.AWS_REGION || 'eu-west-1' });
+  clientConfig = {
+    region: process.env.AWS_REGION || 'eu-west-1'
+  };
 }
 
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
+const client = new DynamoDBClient(clientConfig);
+const dynamoDb = DynamoDBDocumentClient.from(client);
 
 module.exports = dynamoDb;

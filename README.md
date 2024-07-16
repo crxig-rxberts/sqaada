@@ -210,7 +210,7 @@ We use React Testing Library to test our React components. These tests focus on 
 - User interactions (clicks, input changes) work as expected
 - Routing functions properly
 
-An example of this can be seen in `App.test.js` or `Navbar.test.js`. The Component tests are lightweight, so they can be ran as part of the unit tests.
+An example of this can be seen in `App.test.js` or `Navbar.test.js`. The Component tests are lightweight, so they can be ran as part of the unit tests. 
 
 ## Test Configuration
 

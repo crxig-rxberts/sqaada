@@ -2,9 +2,9 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import CreateList from '../../client/src/Components/CreateList';
-import { createNewList } from '../../clients/toDoClient';
+import { createNewList } from '../../client/src/clients/toDoClient';
  
-jest.mock('../../clients/toDoClient');
+jest.mock('../../client/src/clients/toDoClient');
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => jest.fn(),

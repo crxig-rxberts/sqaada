@@ -1,19 +1,20 @@
 const request = require('supertest');
+const { DynamoDBDocumentClient, ScanCommand, DeleteCommand, PutCommand, GetCommand } = require("@aws-sdk/lib-dynamodb");
 const dynamoDb = require('../../../../server/config/db');
 const createTestServer = require('../../testServer');
 const { v4: uuidv4 } = require('uuid');
 
-describe('Add Item To List', () => {
+describe('Delete Item From List', () => {
   const app = createTestServer();
-  let testListId;
+  let testListId, testItemId;
 
   const cleanupDatabase = async () => {
     const params = {
       TableName: 'to-do-table',
     };
-    const result = await dynamoDb.scan(params).promise();
+    const result = await dynamoDb.send(new ScanCommand(params));
     const deletePromises = result.Items.map(item =>
-      dynamoDb.delete({ TableName: 'to-do-table', Key: { listId: item.listId } }).promise()
+        dynamoDb.send(new DeleteCommand({ TableName: 'to-do-table', Key: { listId: item.listId } }))
     );
     await Promise.all(deletePromises);
   };
@@ -21,61 +22,51 @@ describe('Add Item To List', () => {
   beforeEach(async () => {
     await cleanupDatabase();
     testListId = uuidv4();
-    await dynamoDb.put({
+    testItemId = uuidv4();
+    await dynamoDb.send(new PutCommand({
       TableName: 'to-do-table',
       Item: {
         listId: testListId,
         name: 'Test List',
-        items: []
+        items: [{
+          itemId: testItemId,
+          title: 'Test Item',
+          description: 'Test Description',
+          createdDate: new Date().toISOString().split('T')[0]
+        }]
       }
-    }).promise();
+    }));
   });
 
   afterEach(cleanupDatabase);
 
-  it('should add an item to the list', async () => {
-    const newItem = {
-      name: 'New Task',
-      description: 'Task Description',
-      status: 'TODO',
-      dueDate: '24/07/2025'
-    };
-
-    const response = await request(app)
-      .post(`/api/to-do-list/${testListId}`)
-      .send(newItem);
+  it('should delete an item from the list', async () => {
+    const response = await request(app).delete(`/api/to-do-list/${testListId}/${testItemId}`);
 
     expect(response.statusCode).toBe(200);
     expect(response.body.status).toBe('SUCCESS');
-    expect(response.body.itemId).toBeDefined();
 
-    // Verify item was added to the list
-    const updatedList = await dynamoDb.get({
+    // Verify item was deleted from the database
+    const updatedList = await dynamoDb.send(new GetCommand({
       TableName: 'to-do-table',
       Key: { listId: testListId }
-    }).promise();
+    }));
 
-    expect(updatedList.Item.items).toHaveLength(1);
-    expect(updatedList.Item.items[0].name).toBe(newItem.name);
-    expect(updatedList.Item.items[0].description).toBe(newItem.description);
-    expect(updatedList.Item.items[0].status).toBe(newItem.status);
-    expect(updatedList.Item.items[0].dueDate).toBe(newItem.dueDate);
-    expect(updatedList.Item.items[0].itemId).toBeDefined();
-    expect(updatedList.Item.items[0].createdDate).toBeDefined();
+    expect(updatedList.Item.items).toHaveLength(0);
   });
 
-  it('should return an error when adding an item to a non-existent list', async () => {
-    const nonExistentListId = uuidv4();
-    const newItem = {
-      name: 'New Task',
-      description: 'Task Description',
-      status: 'TODO',
-      dueDate: '24/07/2025'
-    };
+  it('should return an error when deleting a non-existent item', async () => {
+    const nonExistentItemId = uuidv4();
+    const response = await request(app).delete(`/api/to-do-list/${testListId}/${nonExistentItemId}`);
 
-    const response = await request(app)
-      .post(`/api/to-do-list/${nonExistentListId}`)
-      .send(newItem);
+    expect(response.statusCode).toBe(404);
+    expect(response.body.status).toBe('FAIL');
+    expect(response.body.errorMessage).toBeDefined();
+  });
+
+  it('should return an error when deleting an item from a non-existent list', async () => {
+    const nonExistentListId = uuidv4();
+    const response = await request(app).delete(`/api/to-do-list/${nonExistentListId}/${testItemId}`);
 
     expect(response.statusCode).toBe(404);
     expect(response.body.status).toBe('FAIL');

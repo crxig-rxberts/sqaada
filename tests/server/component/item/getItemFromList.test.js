@@ -1,4 +1,5 @@
 const request = require('supertest');
+const { DynamoDBDocumentClient, ScanCommand, DeleteCommand, PutCommand } = require("@aws-sdk/lib-dynamodb");
 const dynamoDb = require('../../../../server/config/db');
 const createTestServer = require('../../testServer');
 const { v4: uuidv4 } = require('uuid');
@@ -11,9 +12,9 @@ describe('Get Item From List', () => {
     const params = {
       TableName: 'to-do-table',
     };
-    const result = await dynamoDb.scan(params).promise();
+    const result = await dynamoDb.send(new ScanCommand(params));
     const deletePromises = result.Items.map(item =>
-      dynamoDb.delete({ TableName: 'to-do-table', Key: { listId: item.listId } }).promise()
+        dynamoDb.send(new DeleteCommand({ TableName: 'to-do-table', Key: { listId: item.listId } }))
     );
     await Promise.all(deletePromises);
   };
@@ -22,7 +23,7 @@ describe('Get Item From List', () => {
     await cleanupDatabase();
     testListId = uuidv4();
     testItemId = uuidv4();
-    await dynamoDb.put({
+    await dynamoDb.send(new PutCommand({
       TableName: 'to-do-table',
       Item: {
         listId: testListId,
@@ -36,7 +37,7 @@ describe('Get Item From List', () => {
           dueDate: '24/07/2025'
         }]
       }
-    }).promise();
+    }));
   });
 
   afterEach(cleanupDatabase);

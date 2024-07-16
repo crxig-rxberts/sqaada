@@ -1,4 +1,5 @@
 const { v4: uuidv4 } = require('uuid');
+const { PutCommand, ScanCommand, GetCommand, UpdateCommand, DeleteCommand } = require("@aws-sdk/lib-dynamodb");
 const dynamoDb = require('../config/db');
 
 const TABLE_NAME = process.env.DYNAMODB_TABLE_NAME || 'to-do-table';
@@ -16,7 +17,7 @@ const createNewList = async (listName) => {
   };
 
   try {
-    await dynamoDb.put(params).promise();
+    await dynamoDb.send(new PutCommand(params));
     return listId;
   } catch (error) {
     handleDynamoDBError('createNewList', error);
@@ -28,7 +29,7 @@ const getAllLists = async () => {
     TableName: TABLE_NAME
   };
   try {
-    return await dynamoDb.scan(params).promise();
+    return await dynamoDb.send(new ScanCommand(params));
   } catch (error) {
     handleDynamoDBError('getAllLists', error);
   }
@@ -40,7 +41,7 @@ const getListById = async (listId) => {
     Key: { listId }
   };
   try {
-    const result = await dynamoDb.get(params).promise();
+    const result = await dynamoDb.send(new GetCommand(params));
     return result.Item;
   } catch (error) {
     handleDynamoDBError('getListById', error);
@@ -63,7 +64,7 @@ const addItemToList = async (listId, item) => {
   };
 
   try {
-    await dynamoDb.update(params).promise();
+    await dynamoDb.send(new UpdateCommand(params));
   } catch (error) {
     handleDynamoDBError('addItemToList', error);
   }
@@ -75,17 +76,17 @@ const updateItemInList = async (listId, itemId, updateData) => {
     const itemIndex = findItemIndex(currentItem, itemId);
     const updateParams = buildUpdateItemParams(listId, itemIndex, updateData);
 
-    return await dynamoDb.update(updateParams).promise();
+    return await dynamoDb.send(new UpdateCommand(updateParams));
   } catch (error) {
     handleDynamoDBError('updateItemInList', error);
   }
 };
 
 const getCurrentItems = async (listId) => {
-  const result = await dynamoDb.get({
+  const result = await dynamoDb.send(new GetCommand({
     TableName: TABLE_NAME,
     Key: { listId }
-  }).promise();
+  }));
 
   return result.Item;
 };
@@ -133,7 +134,7 @@ const deleteList = async (listId) => {
       TableName: TABLE_NAME,
       Key: { listId }
     };
-    await dynamoDb.delete(params).promise();
+    await dynamoDb.send(new DeleteCommand(params));
   } catch (error) {
     handleDynamoDBError('Delete List', error);
   }
@@ -154,7 +155,7 @@ const deleteItemFromList = async (listId, itemId) => {
       ConditionExpression: 'attribute_exists(#items[' + itemIndexToRemove + '])'
     };
 
-    return await dynamoDb.update(updateParams).promise();
+    return await dynamoDb.send(new UpdateCommand(updateParams));
   } catch (error) {
     handleDynamoDBError('Delete Item From List', error);
   }
@@ -167,13 +168,13 @@ const handleDynamoDBError = (operation, error) => {
   if (error.message && error.message.includes('Item not found in the list')) {
     consumerNote = error.message;
     debugMessage = 'Item not found';
-  } else if (error.code === 'ConditionalCheckFailedException') {
+  } else if (error.name === 'ConditionalCheckFailedException') {
     debugMessage = 'Condition check failed';
-  } else if (error.code === 'ProvisionedThroughputExceededException') {
+  } else if (error.name === 'ProvisionedThroughputExceededException') {
     debugMessage = 'Request rate is too high. Please retry with exponential backoff.';
-  } else if (error.code === 'ResourceNotFoundException') {
+  } else if (error.name === 'ResourceNotFoundException') {
     debugMessage = 'Specified table not found';
-  } else if (error.code === 'InternalServerError') {
+  } else if (error.name === 'InternalServerError') {
     debugMessage = 'Internal server error, please try again later';
   }
 
