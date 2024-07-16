@@ -5,7 +5,7 @@ module.exports = {
   moduleNameMapper: {
     '\\.(css|less|sass|scss)$': '<rootDir>/tests/__mocks__/styleMock.js',
     '\\.(gif|ttf|eot|svg)$': '<rootDir>/tests/__mocks__/fileMock.js',
-    '^react-router-dom$': '<rootDir>/node_modules/react-router-dom',
+    '^react-router-dom$': '<rootDir>/node_modules/react-router-dom/dist/index.js',
   },
   transform: {
     '^.+\\.(js|jsx)$': 'babel-jest',

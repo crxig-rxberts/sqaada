@@ -1,5 +1,5 @@
 const request = require('supertest');
-const { DynamoDBDocumentClient, ScanCommand, DeleteCommand, PutCommand, GetCommand } = require("@aws-sdk/lib-dynamodb");
+const { DynamoDBDocumentClient, ScanCommand, DeleteCommand, PutCommand, GetCommand } = require('@aws-sdk/lib-dynamodb');
 const dynamoDb = require('../../../../server/config/db');
 const createTestServer = require('../../testServer');
 const { v4: uuidv4 } = require('uuid');
@@ -14,7 +14,7 @@ describe('Update Item In List', () => {
     };
     const result = await dynamoDb.send(new ScanCommand(params));
     const deletePromises = result.Items.map(item =>
-        dynamoDb.send(new DeleteCommand({ TableName: 'to-do-table', Key: { listId: item.listId } }))
+      dynamoDb.send(new DeleteCommand({ TableName: 'to-do-table', Key: { listId: item.listId } }))
     );
     await Promise.all(deletePromises);
   };
@@ -51,8 +51,8 @@ describe('Update Item In List', () => {
     };
 
     const response = await request(app)
-        .put(`/api/to-do-list/${testListId}/${testItemId}`)
-        .send(updatedItem);
+      .put(`/api/to-do-list/${testListId}/${testItemId}`)
+      .send(updatedItem);
 
     expect(response.statusCode).toBe(200);
     expect(response.body.status).toBe('SUCCESS');
@@ -85,8 +85,8 @@ describe('Update Item In List', () => {
     };
 
     const response = await request(app)
-        .put(`/api/to-do-list/${testListId}/${nonExistentItemId}`)
-        .send(updatedItem);
+      .put(`/api/to-do-list/${testListId}/${nonExistentItemId}`)
+      .send(updatedItem);
 
     expect(response.statusCode).toBe(404);
     expect(response.body.status).toBe('FAIL');
@@ -103,8 +103,8 @@ describe('Update Item In List', () => {
     };
 
     const response = await request(app)
-        .put(`/api/to-do-list/${nonExistentListId}/${testItemId}`)
-        .send(updatedItem);
+      .put(`/api/to-do-list/${nonExistentListId}/${testItemId}`)
+      .send(updatedItem);
 
     expect(response.statusCode).toBe(404);
     expect(response.body.status).toBe('FAIL');
