@@ -159,15 +159,15 @@ describe('toDoRepository', () => {
       dynamoDb.send.mockImplementationOnce(() => Promise.resolve({ Item: { listId: '1', items: [] } }));
 
       await expect(toDoRepository.updateItemInList('1', '123', { name: 'Updated Item' }))
-          .rejects.toThrow('Item not found in the list');
+        .rejects.toThrow('Item not found in the list');
     });
 
     test('handles error when updating an item in a list', async () => {
       dynamoDb.send.mockImplementationOnce(() => Promise.resolve({ Item: { listId: '1', items: [{ itemId: '123', name: 'Old Item' }] } }))
-          .mockImplementationOnce(() => Promise.reject(new Error('DynamoDB error')));
+        .mockImplementationOnce(() => Promise.reject(new Error('DynamoDB error')));
 
       await expect(toDoRepository.updateItemInList('1', '123', { name: 'Updated Item' }))
-          .rejects.toThrow('Unable to updateItemInList due to an Internal Failure');
+        .rejects.toThrow('Unable to updateItemInList due to an Internal Failure');
     });
   });
 
@@ -197,15 +197,15 @@ describe('toDoRepository', () => {
       dynamoDb.send.mockImplementationOnce(() => Promise.resolve({ Item: { listId: '1', items: [] } }));
 
       await expect(toDoRepository.deleteItemFromList('1', '123'))
-          .rejects.toThrow('Item not found in the list');
+        .rejects.toThrow('Item not found in the list');
     });
 
     test('handles error when deleting an item from a list', async () => {
       dynamoDb.send.mockImplementationOnce(() => Promise.resolve({ Item: { listId: '1', items: [{ itemId: '123', name: 'Item to Delete' }] } }))
-          .mockImplementationOnce(() => Promise.reject(new Error('DynamoDB error')));
+        .mockImplementationOnce(() => Promise.reject(new Error('DynamoDB error')));
 
       await expect(toDoRepository.deleteItemFromList('1', '123'))
-          .rejects.toThrow('Unable to Delete Item From List due to an Internal Failure');
+        .rejects.toThrow('Unable to Delete Item From List due to an Internal Failure');
     });
   });
 
@@ -214,35 +214,35 @@ describe('toDoRepository', () => {
       dynamoDb.send.mockRejectedValue({ name: 'ConditionalCheckFailedException' });
 
       await expect(toDoRepository.createNewList('New List'))
-          .rejects.toThrow('Unable to createNewList due to an Internal Failure');
+        .rejects.toThrow('Unable to createNewList due to an Internal Failure');
     });
 
     test('handles ProvisionedThroughputExceededException', async () => {
       dynamoDb.send.mockRejectedValue({ name: 'ProvisionedThroughputExceededException' });
 
       await expect(toDoRepository.getAllLists())
-          .rejects.toThrow('Unable to getAllLists due to an Internal Failure');
+        .rejects.toThrow('Unable to getAllLists due to an Internal Failure');
     });
 
     test('handles ResourceNotFoundException', async () => {
       dynamoDb.send.mockRejectedValue({ name: 'ResourceNotFoundException' });
 
       await expect(toDoRepository.getListById('1'))
-          .rejects.toThrow('Unable to getListById due to an Internal Failure');
+        .rejects.toThrow('Unable to getListById due to an Internal Failure');
     });
 
     test('handles InternalServerError', async () => {
       dynamoDb.send.mockRejectedValue({ name: 'InternalServerError' });
 
       await expect(toDoRepository.addItemToList('1', { name: 'New Item' }))
-          .rejects.toThrow('Unable to addItemToList due to an Internal Failure');
+        .rejects.toThrow('Unable to addItemToList due to an Internal Failure');
     });
 
     test('handles Item not found error', async () => {
       dynamoDb.send.mockImplementationOnce(() => Promise.resolve({ Item: { listId: '1', items: [] } }));
 
       await expect(toDoRepository.updateItemInList('1', '123', { name: 'Updated Item' }))
-          .rejects.toThrow('Item not found in the list');
+        .rejects.toThrow('Item not found in the list');
     });
   });
 
@@ -264,7 +264,7 @@ describe('toDoRepository', () => {
       dynamoDb.send.mockRejectedValue(new Error('DynamoDB error'));
 
       await expect(toDoRepository.deleteList('123'))
-          .rejects.toThrow('Unable to Delete List due to an Internal Failure');
+        .rejects.toThrow('Unable to Delete List due to an Internal Failure');
     });
   });
 });

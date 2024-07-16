@@ -1,5 +1,5 @@
 const request = require('supertest');
-const { DynamoDBDocumentClient, ScanCommand, DeleteCommand, PutCommand, GetCommand } = require("@aws-sdk/lib-dynamodb");
+const { DynamoDBDocumentClient, ScanCommand, DeleteCommand, PutCommand, GetCommand } = require('@aws-sdk/lib-dynamodb');
 const dynamoDb = require('../../../../server/config/db');
 const createTestServer = require('../../testServer');
 const { v4: uuidv4 } = require('uuid');
@@ -14,7 +14,7 @@ describe('Delete Item From List', () => {
     };
     const result = await dynamoDb.send(new ScanCommand(params));
     const deletePromises = result.Items.map(item =>
-        dynamoDb.send(new DeleteCommand({ TableName: 'to-do-table', Key: { listId: item.listId } }))
+      dynamoDb.send(new DeleteCommand({ TableName: 'to-do-table', Key: { listId: item.listId } }))
     );
     await Promise.all(deletePromises);
   };

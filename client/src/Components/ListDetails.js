@@ -10,7 +10,7 @@ import {
 import TodoItem from './TodoItem';
 import TodoForm from './TodoForm';
 import Modal from './Modal';
-import LoadingSpinner from './Loadingspinner';
+import LoadingSpinner from './LoadingSpinner';
 
 const ListDetails = () => {
   const { listId } = useParams();
@@ -114,44 +114,44 @@ const ListDetails = () => {
   if (!list) return <LoadingSpinner />;
 
   return (
-      <div className="container py-5">
-        <h1 className="display-4 text-center mb-5">{list.name}</h1>
-        <div className="d-flex justify-content-between align-items-center mb-4">
-          <button onClick={toggleModal} className="btn bg-info shadow-sm">Add New Item</button>
-          <button onClick={toggleSortOrder} className="btn btn-outline-secondary">
+    <div className="container py-5">
+      <h1 className="display-4 text-center mb-5">{list.name}</h1>
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <button onClick={toggleModal} className="btn bg-info shadow-sm">Add New Item</button>
+        <button onClick={toggleSortOrder} className="btn btn-outline-secondary">
             Sort by Date {sortOrder === 'asc' ? '↑' : '↓'}
-          </button>
-        </div>
-
-        <div className="row">
-          <div className="col-md-12">
-            <h2 className="h4 mb-4">Items</h2>
-            {sortedItems.length === 0 ? (
-                <p className="text-muted">No items in this list. Add one using the button above!</p>
-            ) : (
-                <div className="list-group">
-                  {sortedItems.map((item) => (
-                      <TodoItem
-                          key={item.itemId}
-                          item={item}
-                          onStatusChange={handleUpdateItem}
-                          onEdit={handleItemClick}
-                          onDelete={handleDeleteItem}
-                      />
-                  ))}
-                </div>
-            )}
-          </div>
-        </div>
-
-        <Modal isOpen={isModalOpen} onClose={toggleModal} title={currentItem ? 'Edit Item' : 'Add New Item'}>
-          <TodoForm
-              item={newItem}
-              onChange={setNewItem}
-              onSubmit={handleModalSubmit}
-          />
-        </Modal>
+        </button>
       </div>
+
+      <div className="row">
+        <div className="col-md-12">
+          <h2 className="h4 mb-4">Items</h2>
+          {sortedItems.length === 0 ? (
+            <p className="text-muted">No items in this list. Add one using the button above!</p>
+          ) : (
+            <div className="list-group">
+              {sortedItems.map((item) => (
+                <TodoItem
+                  key={item.itemId}
+                  item={item}
+                  onStatusChange={handleUpdateItem}
+                  onEdit={handleItemClick}
+                  onDelete={handleDeleteItem}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <Modal isOpen={isModalOpen} onClose={toggleModal} title={currentItem ? 'Edit Item' : 'Add New Item'}>
+        <TodoForm
+          item={newItem}
+          onChange={setNewItem}
+          onSubmit={handleModalSubmit}
+        />
+      </Modal>
+    </div>
   );
 };
 
