@@ -1,4 +1,5 @@
 const request = require('supertest');
+const { DynamoDBDocumentClient, ScanCommand, DeleteCommand, PutCommand } = require("@aws-sdk/lib-dynamodb");
 const dynamoDb = require('../../../../server/config/db');
 const createTestServer = require('../../testServer');
 const { v4: uuidv4 } = require('uuid');
@@ -10,9 +11,9 @@ describe('Get List By ID', () => {
     const params = {
       TableName: 'to-do-table',
     };
-    const result = await dynamoDb.scan(params).promise();
+    const result = await dynamoDb.send(new ScanCommand(params));
     const deletePromises = result.Items.map(item =>
-      dynamoDb.delete({ TableName: 'to-do-table', Key: { listId: item.listId } }).promise()
+        dynamoDb.send(new DeleteCommand({ TableName: 'to-do-table', Key: { listId: item.listId } }))
     );
     await Promise.all(deletePromises);
   };
@@ -22,14 +23,14 @@ describe('Get List By ID', () => {
 
   it('should retrieve a specific list by ID', async () => {
     const testListId = uuidv4();
-    await dynamoDb.put({
+    await dynamoDb.send(new PutCommand({
       TableName: 'to-do-table',
       Item: {
         listId: testListId,
         name: 'Test Retrieval List',
         items: []
       }
-    }).promise();
+    }));
 
     const response = await request(app).get(`/api/to-do-list/${testListId}`);
 

@@ -1,4 +1,5 @@
 const request = require('supertest');
+const { DynamoDBDocumentClient, ScanCommand, DeleteCommand, PutCommand, GetCommand } = require("@aws-sdk/lib-dynamodb");
 const dynamoDb = require('../../../../server/config/db');
 const createTestServer = require('../../testServer');
 const { v4: uuidv4 } = require('uuid');
@@ -11,9 +12,9 @@ describe('Update Item In List', () => {
     const params = {
       TableName: 'to-do-table',
     };
-    const result = await dynamoDb.scan(params).promise();
+    const result = await dynamoDb.send(new ScanCommand(params));
     const deletePromises = result.Items.map(item =>
-      dynamoDb.delete({ TableName: 'to-do-table', Key: { listId: item.listId } }).promise()
+        dynamoDb.send(new DeleteCommand({ TableName: 'to-do-table', Key: { listId: item.listId } }))
     );
     await Promise.all(deletePromises);
   };
@@ -22,7 +23,7 @@ describe('Update Item In List', () => {
     await cleanupDatabase();
     testListId = uuidv4();
     testItemId = uuidv4();
-    await dynamoDb.put({
+    await dynamoDb.send(new PutCommand({
       TableName: 'to-do-table',
       Item: {
         listId: testListId,
@@ -36,7 +37,7 @@ describe('Update Item In List', () => {
           dueDate: '24/07/2025'
         }]
       }
-    }).promise();
+    }));
   });
 
   afterEach(cleanupDatabase);
@@ -50,8 +51,8 @@ describe('Update Item In List', () => {
     };
 
     const response = await request(app)
-      .put(`/api/to-do-list/${testListId}/${testItemId}`)
-      .send(updatedItem);
+        .put(`/api/to-do-list/${testListId}/${testItemId}`)
+        .send(updatedItem);
 
     expect(response.statusCode).toBe(200);
     expect(response.body.status).toBe('SUCCESS');
@@ -63,10 +64,10 @@ describe('Update Item In List', () => {
     expect(response.body.updatedItem.createdDate).toBe('2024-06-27');
 
     // Verify item was updated in the database
-    const updatedList = await dynamoDb.get({
+    const updatedList = await dynamoDb.send(new GetCommand({
       TableName: 'to-do-table',
       Key: { listId: testListId }
-    }).promise();
+    }));
 
     expect(updatedList.Item.items[0].name).toBe(updatedItem.name);
     expect(updatedList.Item.items[0].description).toBe(updatedItem.description);
@@ -84,8 +85,8 @@ describe('Update Item In List', () => {
     };
 
     const response = await request(app)
-      .put(`/api/to-do-list/${testListId}/${nonExistentItemId}`)
-      .send(updatedItem);
+        .put(`/api/to-do-list/${testListId}/${nonExistentItemId}`)
+        .send(updatedItem);
 
     expect(response.statusCode).toBe(404);
     expect(response.body.status).toBe('FAIL');
@@ -102,8 +103,8 @@ describe('Update Item In List', () => {
     };
 
     const response = await request(app)
-      .put(`/api/to-do-list/${nonExistentListId}/${testItemId}`)
-      .send(updatedItem);
+        .put(`/api/to-do-list/${nonExistentListId}/${testItemId}`)
+        .send(updatedItem);
 
     expect(response.statusCode).toBe(404);
     expect(response.body.status).toBe('FAIL');

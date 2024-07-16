@@ -79,8 +79,8 @@ const PrivacyPolicy = () => {
                 ))}
                 <p className="mt-5">Last updated: July 08, 2024</p>
             </Card>
-        </div>
-    );
+    </div>
+  );
 };
 
 export default PrivacyPolicy;

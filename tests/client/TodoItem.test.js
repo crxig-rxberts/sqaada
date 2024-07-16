@@ -27,7 +27,7 @@ describe('TodoItem component', () => {
     render(<TodoItem item={mockItem} onStatusChange={mockOnStatusChange} onEdit={mockOnEdit} onDelete={mockOnDelete} />);
 
     fireEvent.change(screen.getByRole('combobox'), { target: { value: 'COMPLETED' } });
-    expect(mockOnStatusChange).toHaveBeenCalledWith('1', 'COMPLETED');
+    expect(mockOnStatusChange).toHaveBeenCalledWith('1', { status: 'COMPLETED' });
   });
 
   test('calls onEdit when Edit button is clicked', () => {

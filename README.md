@@ -47,8 +47,9 @@ Team sqaada consists of two members, Alexander Keen & Craig Roberts. Together we
 - Wrote the backend express server & API endpoints
 - Wrote Unit & Integration Tests for express server & endpoints
 - Created CI/CD workflow to apply testing & SQA in an automated pipeline
-- Carrying the team
-- Solutions architect
+- Created POC Infrastructure as Code
+- Solutions Architect
+- Documentation Contributor
 
 ## Alexander Keen
 - Writing front end unit tests
@@ -93,7 +94,6 @@ Custom npm scripts created to streamline various development processes:
 
 - **ESLint**: A static code analysis tool for identifying and fixing problems in JavaScript code. Our ESLint configuration enforces consistent coding styles and catches potential errors.
 - **OWASP Dependency-Check**: Used to scan our project dependencies for known vulnerabilities, enhancing the security of our application.
-- **Prettier**: An opinionated code formatter ensuring consistent code style across the project.
 
 ## Project Management Tools
 
@@ -159,21 +159,18 @@ Our testing strategy employs a comprehensive approach, combining manual testing 
 
 ### Feature Testing
 
-We conducted thorough manual testing for each new feature, ensuring it met the requirements and functioned as expected across different browsers and devices. This process involved:
+We conducted thorough manual testing for each new feature, ensuring it met the requirements and functioned as expected. This process involved:
 
-- Creating test cases for each user story and acceptance criteria
 - Performing positive and negative test scenarios
-- Testing on multiple browsers (Chrome, Firefox, Safari) and devices (desktop, tablet, mobile)
 - Verifying UI/UX elements for consistency and usability
 
 ### Regression Testing
 
 After implementing new features or fixing bugs, we performed regression testing to ensure that existing functionality was not affected. Our regression testing process included:
 
-- Running through a predefined checklist of core application features
+- Testing of core application features
 - Verifying that fixed bugs remain resolved
-- Checking for any unintended side-effects in related features
-- Automated re-running of all unit and integration tests
+- Checking for any unintended side effects in related features
 
 ## Automated Testing
 
@@ -191,6 +188,10 @@ Example unit tests can be found in files like `itemController.test.js` and `toDo
 
 To run unit tests: `npm run unit-test`
 
+The below screenshot is taking before complete of the entire Component Test suite.
+
+![unitTest.png](./screenshots/unitTest.png)
+
 ### Integration Testing
 
 Integration tests were written to verify the interaction between different parts of the application. These tests focus on:
@@ -203,6 +204,8 @@ Our integration tests use a combination of supertest for API testing and a custo
 
 To run integration tests: `npm run integration-test`
 
+![integrationTests.png](./screenshots/integrationTests.png)
+
 ### React Component Testing
 
 We use React Testing Library to test our React components. These tests focus on component behavior from a user's perspective, ensuring that:
@@ -211,7 +214,7 @@ We use React Testing Library to test our React components. These tests focus on 
 - User interactions (clicks, input changes) work as expected
 - Routing functions properly
 
-An example of this can be seen in `App.test.js`.
+An example of this can be seen in `App.test.js` or `Navbar.test.js`. The Component tests are lightweight, so they can be ran as part of the unit tests. 
 
 ## Test Configuration
 
@@ -226,7 +229,7 @@ Our Jest configuration (`jest.config.js`) is set up to:
 
 While our current testing strategy is comprehensive, we've identified areas for future enhancement:
 
-1. Increase code coverage targets to 90%
+1. Increase code coverage targets from 60% to 90%
 2. Implement automated end-to-end testing using a tool like Cypress
 3. Add performance testing for API endpoints
 4. Implement automated visual regression testing for UI components
@@ -237,7 +240,7 @@ While our current testing strategy is comprehensive, we've identified areas for 
 
 ## Terraform Implementation
 
-All IaC is stored under the .deploy/ directory in the project root. 
+All IaC is stored under the .deploy/ directory in the project root.
 
 We utilized Terraform to define and provision our infrastructure as code, ensuring consistency and reproducibility across environments. Our Terraform configuration manages the following AWS resources:
 
@@ -348,8 +351,7 @@ All code changes were submitted via pull requests and required at least one appr
 4. Performance: Identifying any potential performance issues
 5. Security: Spotting any security vulnerabilities
 
---- 
-# THIS IS STILL TODO
+---
 # SQA Standards Application
 
 ## WCAG
@@ -363,8 +365,6 @@ Our testing processes were aligned with ISO 29119 software testing standards to 
 ## ISO 27001
 
 We implemented information security practices in line with ISO 27001 to protect user data and ensure the integrity of our application.
-
----
 
 # CI/CD Pipeline
 
@@ -414,9 +414,6 @@ While our current CI pipeline is effective for maintaining code quality, we have
 - Increase our code coverage requirements as the project matures
 
 By maintaining and improving this CI pipeline, we ensure high code quality, catch issues early, and pave the way for potential automated deployments in the future.
-
---- 
-# THIS IS STILL TODO 
 
 # Performance & Accessibility Audit
 

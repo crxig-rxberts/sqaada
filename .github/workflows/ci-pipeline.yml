@@ -3,8 +3,6 @@ name: CI Pipeline
 on:
   push:
     branches: "**"
-  pull_request:
-    branches: [ main ]
 
 jobs:
   lint:
@@ -68,6 +66,10 @@ jobs:
     needs: test
     steps:
       - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          npm i
+          cd client && npm i
       - name: Run OWASP Dependency-Check
         uses: dependency-check/Dependency-Check_Action@main
         with:
@@ -78,4 +80,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: dependency-check-report
-          path: dependency-check-report.html
+          path: reports/dependency-check-report.html

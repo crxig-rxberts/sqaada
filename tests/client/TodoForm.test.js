@@ -42,9 +42,10 @@ describe('TodoForm component', () => {
   });
 
   test('calls onSubmit when form is submitted', () => {
-    render(<TodoForm item={mockItem} onChange={mockOnChange} onSubmit={mockOnSubmit} />);
-    
-    fireEvent.submit(screen.getByRole('form'));
+    const { container } = render(<TodoForm item={mockItem} onChange={mockOnChange} onSubmit={mockOnSubmit} />);
+
+    const form = container.querySelector('form');
+    fireEvent.submit(form);
     expect(mockOnSubmit).toHaveBeenCalledTimes(1);
   });
 
