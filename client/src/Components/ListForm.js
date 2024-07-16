@@ -1,4 +1,3 @@
-// components/ListForm.js
 import React, { useState } from 'react';
 
 const ListForm = ({ onSubmit }) => {
