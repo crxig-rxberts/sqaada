@@ -50,13 +50,13 @@ jest.mock('react-router-dom', () => ({
 
 describe('ListDetails component integration', () => {
   beforeEach(() => {
+    jest.clearAllMocks();
     getListById.mockResolvedValue({ status: 'SUCCESS', list: mockList });
     addItemInList.mockResolvedValue({ status: 'SUCCESS', itemId: '3' });
     updateItemInList.mockResolvedValue({ status: 'SUCCESS' });
     deleteItemFromList.mockResolvedValue({ status: 'SUCCESS' });
     getItemFromList.mockResolvedValue({ status: 'SUCCESS', item: mockList.items[0] });
     
-    jest.clearAllMocks();
   });
 
   test('renders full list details with all components', async () => {
