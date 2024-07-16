@@ -188,6 +188,10 @@ Example unit tests can be found in files like `itemController.test.js` and `toDo
 
 To run unit tests: `npm run unit-test`
 
+The below screenshot is taking before complete of the entire Component Test suite.
+
+![unitTest.png](./screenshots/unitTest.png)
+
 ### Integration Testing
 
 Integration tests were written to verify the interaction between different parts of the application. These tests focus on:
