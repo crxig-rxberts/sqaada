@@ -10,7 +10,7 @@ import {
 import TodoItem from './TodoItem';
 import TodoForm from './TodoForm';
 import Modal from './Modal';
-import LoadingSpinner from './LoadingSpinner';
+import LoadingSpinner from './Loadingspinner';
 
 const ListDetails = () => {
   const { listId } = useParams();

@@ -73,7 +73,7 @@ const PrivacyPolicy = () => {
     return (
         <div className="container py-5">
             <h1 className="display-4 text-center mb-5">Privacy Policy</h1>
-            <Card>
+            <Card className='bg-opacity-25'>
                 {policySections.map((section, index) => (
                     <PolicySection key={index} title={section.title} content={section.content} />
                 ))}

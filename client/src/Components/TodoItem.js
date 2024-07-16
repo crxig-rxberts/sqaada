@@ -18,7 +18,7 @@ const TodoItem = ({ item, onStatusChange, onEdit, onDelete }) => (
             <select
                 className="form-select w-50"
                 value={item.status}
-                onChange={(e) => onStatusChange(item.itemId, e.target.value)}
+                onChange={(e) => onStatusChange(item.itemId, {status :e.target.value})}
                 disabled={item.status === 'COMPLETED'}
             >
                 <option value="TODO">To Do</option>
