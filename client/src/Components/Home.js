@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getAllLists, deleteList } from '../clients/toDoClient';
 import ListItem from './ListItem';
-import LoadingSpinner from './Loadingspinner';
+import LoadingSpinner from './LoadingSpinner';
 
 const Home = () => {
   const [lists, setLists] = useState([]);
