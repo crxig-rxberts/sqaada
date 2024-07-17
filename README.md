@@ -43,7 +43,7 @@ We have endeavored to create an intuitive UI that is easy to navigate. It follow
 
 Team sqaada consists of two members, Alexander Keen & Craig Roberts. Together we met daily to plan and refine tickets and align on the project's path forward, which is covered further in the Project Management section.
 
-## Craig Roberts
+## Craig Roberts **50% Contribution**
 - Wrote the backend express server & API endpoints
 - Wrote Unit & Integration Tests for express server & endpoints
 - Created CI/CD workflow to apply testing & SQA in an automated pipeline
@@ -51,7 +51,7 @@ Team sqaada consists of two members, Alexander Keen & Craig Roberts. Together we
 - Solutions Architect
 - Documentation Contributor
 
-## Alexander Keen
+## Alexander Keen **50% Contribution**
 - Writing front end unit tests
 - Keeping the front end consistent with SQA practices that we agreed on
 - Reviewing pull requests
@@ -355,6 +355,7 @@ Our pipeline includes automated unit and integration tests to catch issues early
 
 We generate code coverage reports as part of our pipeline:
 
+![coverage.png](screenshots/coverage.png)
 
 ## OWASP Dependency-Check
 
@@ -364,8 +365,6 @@ The ideal state would be that the pipeline fails on *any* vulnerability and know
 ![owaspStage.png](screenshots/owaspStage.png)
 
 ![owasp.png](screenshots/owasp.png)
-
-
 
 # Future Improvements
 
