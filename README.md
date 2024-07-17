@@ -401,6 +401,7 @@ Our application is designed to meet Web Content Accessibility Guidelines (WCAG) 
 ### Understandable
 
 - **Readable**: We use clear, simple language and avoid jargon where possible.
+- **Screen Reader Ready**: We will endevour to improve our JSX by taking advantage of articles and sections as opposed to divs, in order to help disabled users access the application.
 - **Predictable**: Navigation and interface elements are consistent across the application.
 
 ## REST API Design Principles
